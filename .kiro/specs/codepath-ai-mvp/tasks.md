@@ -889,7 +889,7 @@ The implementation is organized into 5 major phases:
     - Test NPS calculation
     - _Requirements: 17.1, 17.2, 17.5, 17.9_
 
-- [ ] 24. Checkpoint - Retention features complete
+- [x] 24. Checkpoint - Retention features complete
   - Ensure all tests pass, ask the user if questions arise.
 
 
