@@ -120,6 +120,51 @@ export const npsSchema = z.object({
      feedback: z.string().max(1000, 'Feedback must be less than 1000 characters').optional(),
 });
 
+// Lesson content validation schemas
+export const lessonSectionSchema = z.object({
+     type: z.enum(['text', 'code', 'image', 'video'], {
+          errorMap: () => ({ message: 'Invalid section type' }),
+     }),
+     content: z.string().min(1, 'Section content cannot be empty'),
+     language: z.string().optional(),
+});
+
+export const exerciseSchema = z.object({
+     id: z.string().min(1, 'Exercise ID is required'),
+     prompt: z.string().min(1, 'Exercise prompt is required'),
+     starterCode: z.string().optional(),
+     solution: z.string().optional(),
+     hints: z.array(z.string()).default([]),
+});
+
+export const testCaseSchema = z.object({
+     input: z.any(),
+     expectedOutput: z.any(),
+     description: z.string().min(1, 'Test case description is required'),
+});
+
+export const lessonContentSchema = z.object({
+     sections: z.array(lessonSectionSchema).min(1, 'At least one section is required'),
+     learningObjectives: z.array(z.string().min(1, 'Learning objective cannot be empty')).min(1, 'At least one learning objective is required'),
+     exercises: z.array(exerciseSchema).min(1, 'At least one exercise is required'),
+});
+
+export const lessonSchema = z.object({
+     roadmapId: z.string().uuid('Invalid roadmap ID'),
+     title: z.string().min(1, 'Title is required').max(255, 'Title must be less than 255 characters'),
+     description: z.string().min(1, 'Description is required'),
+     content: lessonContentSchema,
+     orderIndex: z.number().int().min(0, 'Order index must be non-negative'),
+     estimatedDuration: z.number().int().min(5, 'Duration must be at least 5 minutes').max(60, 'Duration must be less than 60 minutes'),
+     difficultyLevel: z.number().int().min(1, 'Difficulty level must be at least 1').max(5, 'Difficulty level must be at most 5').default(1),
+     prerequisites: z.array(z.string().uuid('Invalid prerequisite ID')).default([]),
+     language: z.enum(['javascript', 'python', 'html'], {
+          errorMap: () => ({ message: 'Invalid language' }),
+     }),
+     starterCode: z.string().nullable().optional(),
+     testCases: z.array(testCaseSchema).nullable().optional(),
+});
+
 // Type exports
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -135,3 +180,6 @@ export type ProjectSubmissionInput = z.infer<typeof projectSubmissionSchema>;
 export type EmailPreferencesInput = z.infer<typeof emailPreferencesSchema>;
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>;
 export type NpsInput = z.infer<typeof npsSchema>;
+export type LessonContentInput = z.infer<typeof lessonContentSchema>;
+export type LessonInput = z.infer<typeof lessonSchema>;
+export type TestCaseInput = z.infer<typeof testCaseSchema>;

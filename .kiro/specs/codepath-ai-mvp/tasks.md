@@ -1144,8 +1144,8 @@ The implementation is organized into 5 major phases:
     - Test focus management
     - _Requirements: 20.1, 20.2, 20.7_
 
-- [ ] 29. Implement content management features
-  - [ ] 29.1 Create lesson content validation
+- [-] 29. Implement content management features
+  - [x] 29.1 Create lesson content validation
     - Validate JSONB structure on insert/update
     - Ensure required fields (sections, learningObjectives, exercises)
     - Validate array types and nested structures
@@ -1155,7 +1155,7 @@ The implementation is organized into 5 major phases:
     - **Property 64: Lesson content structure validation**
     - **Validates: Requirements 18.1**
 
-  - [ ] 29.3 Implement markdown rendering
+  - [x] 29.3 Implement markdown rendering
     - Integrate markdown parser (remark/rehype)
     - Support headings, lists, emphasis, links
     - Add syntax highlighting for code blocks
@@ -1170,7 +1170,7 @@ The implementation is organized into 5 major phases:
     - **Property 66: Code example rendering**
     - **Validates: Requirements 18.3**
 
-  - [ ] 29.6 Implement test case execution
+  - [x] 29.6 Implement test case execution
     - Create runTestCases() function
     - Execute user code against test cases
     - Compare outputs with expected results
@@ -1182,7 +1182,7 @@ The implementation is organized into 5 major phases:
     - **Property 68: Test case execution**
     - **Validates: Requirements 18.5**
 
-  - [ ] 29.8 Implement content versioning
+  - [x] 29.8 Implement content versioning
     - Add version column to lessons table
     - Create lesson_versions table
     - Save previous version on update
