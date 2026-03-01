@@ -1,11 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import StatsCard from './StatsCard';
-import StreakCalendar from './StreakCalendar';
 import GoalPivotModal from './GoalPivotModal';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
+// Dynamic import for StreakCalendar (visualization component)
+const StreakCalendar = dynamic(() => import('./StreakCalendar'), {
+     loading: () => (
+          <div className="h-40 flex items-center justify-center">
+               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+     ),
+});
 
 interface ProgressData {
      completedLessons: number;

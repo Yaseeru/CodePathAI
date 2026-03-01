@@ -1,9 +1,16 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import CodeEditor from '@/components/editor/CodeEditor';
+import dynamic from 'next/dynamic';
 import CodeOutput from '@/components/editor/CodeOutput';
 import CodeControls from '@/components/editor/CodeControls';
+import EditorSkeleton from '@/components/editor/EditorSkeleton';
+
+// Dynamic import for Monaco Editor (heavy component, SSR disabled)
+const CodeEditor = dynamic(() => import('@/components/editor/CodeEditor'), {
+     loading: () => <EditorSkeleton />,
+     ssr: false,
+});
 
 interface ExecutionResult {
      stdout: string;

@@ -125,13 +125,17 @@ export default function LessonContent({ lesson }: LessonContentProps) {
                                    )}
 
                                    {section.type === 'image' && (
-                                        <div className="relative w-full h-96 rounded-lg overflow-hidden">
+                                        <div className="relative w-full h-96 rounded-lg overflow-hidden bg-gray-100">
                                              <Image
                                                   src={section.content}
                                                   alt={section.alt || `Illustration for ${lesson.title}`}
                                                   fill
                                                   className="object-contain"
                                                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                  placeholder="blur"
+                                                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAwIiBoZWlnaHQ9IjQ3NSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiLz4="
+                                                  loading="lazy"
+                                                  quality={85}
                                              />
                                         </div>
                                    )}

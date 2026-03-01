@@ -1,14 +1,21 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import LessonContent from '@/components/lesson/LessonContent';
 import LessonTimer from '@/components/lesson/LessonTimer';
 import LessonProgress from '@/components/lesson/LessonProgress';
-import CodeEditor from '@/components/editor/CodeEditor';
 import CodeOutput from '@/components/editor/CodeOutput';
 import CodeControls from '@/components/editor/CodeControls';
 import Notification from '@/components/ui/Notification';
 import { useNotification } from '@/lib/hooks/useNotification';
+import EditorSkeleton from '@/components/editor/EditorSkeleton';
+
+// Dynamic import for Monaco Editor (heavy component, SSR disabled)
+const CodeEditor = dynamic(() => import('@/components/editor/CodeEditor'), {
+  loading: () => <EditorSkeleton />,
+  ssr: false,
+});
 
 interface ExecutionResult {
   stdout: string;
