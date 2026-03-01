@@ -771,8 +771,8 @@ The implementation is organized into 5 major phases:
     - Test opt-out filtering
     - _Requirements: 12.1, 12.4, 12.5_
 
-- [ ] 22. Implement goal pivot functionality
-  - [ ] 22.1 Create goal pivot UI
+- [x] 22. Implement goal pivot functionality
+  - [x] 22.1 Create goal pivot UI
     - Add "Change Goal" button to dashboard
     - Create goal pivot modal/page
     - Show current goal and progress
@@ -781,7 +781,7 @@ The implementation is organized into 5 major phases:
     - Add confirmation step
     - _Requirements: 13.1, 13.2_
 
-  - [ ] 22.2 Implement goal pivot API
+  - [x] 22.2 Implement goal pivot API
     - Create POST /api/roadmap/pivot endpoint
     - Validate new goal input
     - Archive current roadmap (status: 'archived')
@@ -803,7 +803,7 @@ The implementation is organized into 5 major phases:
     - **Property 42: Previous roadmap archival**
     - **Validates: Requirements 13.6**
 
-  - [ ] 22.6 Create progress history view
+  - [x] 22.6 Create progress history view
     - Show archived roadmaps
     - Display completion stats for each roadmap
     - Allow viewing past lessons and projects

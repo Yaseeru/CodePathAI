@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import StatsCard from './StatsCard';
 import StreakCalendar from './StreakCalendar';
+import GoalPivotModal from './GoalPivotModal';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface ProgressData {
      completedLessons: number;
@@ -46,6 +48,8 @@ export default function ProgressDashboard({
      const [progressData, setProgressData] = useState<ProgressData | null>(null);
      const [loading, setLoading] = useState(true);
      const [error, setError] = useState<string | null>(null);
+     const [isGoalPivotModalOpen, setIsGoalPivotModalOpen] = useState(false);
+     const router = useRouter();
 
      useEffect(() => {
           fetchProgressData();
@@ -68,6 +72,24 @@ export default function ProgressDashboard({
           } finally {
                setLoading(false);
           }
+     };
+
+     const handleGoalPivot = async (newGoal: string) => {
+          const response = await fetch('/api/roadmap/pivot', {
+               method: 'POST',
+               headers: {
+                    'Content-Type': 'application/json',
+               },
+               body: JSON.stringify({ newGoal }),
+          });
+
+          if (!response.ok) {
+               const errorData = await response.json();
+               throw new Error(errorData.error || 'Failed to change goal');
+          }
+
+          // Refresh the page to show new roadmap
+          router.refresh();
      };
 
      if (loading) {
@@ -130,12 +152,12 @@ export default function ProgressDashboard({
                                    >
                                         Continue Learning
                                    </Link>
-                                   <Link
-                                        href="/onboarding"
+                                   <button
+                                        onClick={() => setIsGoalPivotModalOpen(true)}
                                         className="bg-gray-200 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-300 transition-colors font-medium"
                                    >
                                         Change Goal
-                                   </Link>
+                                   </button>
                               </div>
                          </div>
                     </div>
@@ -295,9 +317,30 @@ export default function ProgressDashboard({
 
                     {/* Additional Stats */}
                     <div className="mt-6 bg-white rounded-lg shadow-sm p-6">
-                         <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                              Additional Stats
-                         </h2>
+                         <div className="flex items-center justify-between mb-4">
+                              <h2 className="text-xl font-semibold text-gray-900">
+                                   Additional Stats
+                              </h2>
+                              <Link
+                                   href="/progress/history"
+                                   className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
+                              >
+                                   View History
+                                   <svg
+                                        className="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                   >
+                                        <path
+                                             strokeLinecap="round"
+                                             strokeLinejoin="round"
+                                             strokeWidth={2}
+                                             d="M9 5l7 7-7 7"
+                                        />
+                                   </svg>
+                              </Link>
+                         </div>
                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                               <div>
                                    <p className="text-sm text-gray-600 mb-1">Longest Streak</p>
@@ -321,6 +364,19 @@ export default function ProgressDashboard({
                               </div>
                          </div>
                     </div>
+
+                    {/* Goal Pivot Modal */}
+                    <GoalPivotModal
+                         isOpen={isGoalPivotModalOpen}
+                         onClose={() => setIsGoalPivotModalOpen(false)}
+                         currentGoal={learningGoal}
+                         currentProgress={{
+                              completedLessons: progressData.completedLessons,
+                              completedProjects: progressData.completedProjects,
+                              totalTime: progressData.totalTime.formatted,
+                         }}
+                         onConfirm={handleGoalPivot}
+                    />
                </div>
           </div>
      );
