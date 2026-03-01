@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
-import { requireAuth } from '@/lib/auth/utils';
-import { withCache, progressCacheKey, CACHE_TTL } from '@/lib/cache/redis';
+import { getUser } from '@/lib/supabase';
 
 // Configure route caching - revalidate every 5 minutes
 export const revalidate = 300;
@@ -13,100 +12,132 @@ export const revalidate = 300;
 export async function GET(req: NextRequest) {
      try {
           // Authenticate user
-          const user = await requireAuth();
+          const user = await getUser();
 
-          // Use cache wrapper for expensive progress calculation
-          const progressData = await withCache(
-               progressCacheKey(user.id),
-               CACHE_TTL.PROGRESS,
-               async () => {
-                    const supabase = createServerClient();
+          if (!user) {
+               return NextResponse.json(
+                    { error: 'Unauthorized' },
+                    { status: 401 }
+               );
+          }
 
-                    // Fetch user progress
-                    const { data: userProgress, error: progressError } = await supabase
-                         .from('user_progress')
-                         .select('*')
-                         .eq('user_id', user.id)
-                         .single();
+          const supabase = createServerClient();
 
-                    if (progressError) {
-                         throw new Error('Failed to fetch user progress');
-                    }
+          // Fetch or create user progress
+          let { data: userProgress, error: progressError } = await supabase
+               .from('user_progress')
+               .select('*')
+               .eq('user_id', user.id)
+               .single();
 
-                    // Fetch current roadmap to calculate completion percentage
-                    const { data: roadmap, error: roadmapError } = await supabase
-                         .from('roadmaps')
-                         .select('id')
-                         .eq('user_id', user.id)
-                         .eq('status', 'active')
-                         .single();
+          // If no progress record exists, create one
+          if (progressError || !userProgress) {
+               const { data: newProgress, error: createError } = await supabase
+                    .from('user_progress')
+                    .insert({
+                         user_id: user.id,
+                         total_lessons_completed: 0,
+                         total_projects_completed: 0,
+                         total_learning_time: 0,
+                         current_streak: 0,
+                         longest_streak: 0,
+                         difficulty_level: 1,
+                    })
+                    .select()
+                    .single();
 
-                    let roadmapCompletionPercentage = 0;
-                    let totalLessons = 0;
-
-                    if (roadmap && !roadmapError) {
-                         // Count total lessons in roadmap
-                         const { count: lessonCount } = await supabase
-                              .from('lessons')
-                              .select('*', { count: 'exact', head: true })
-                              .eq('roadmap_id', roadmap.id);
-
-                         totalLessons = lessonCount || 0;
-
-                         // Calculate completion percentage
-                         if (totalLessons > 0) {
-                              roadmapCompletionPercentage = Math.round(
-                                   (userProgress.total_lessons_completed / totalLessons) * 100
-                              );
-                         }
-                    }
-
-                    // Calculate current streak from daily_activity
-                    const currentStreak = await calculateCurrentStreak(supabase, user.id);
-
-                    // Fetch recent activity (last 7 days)
-                    const sevenDaysAgo = new Date();
-                    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-                    const { data: recentActivity, error: activityError } = await supabase
-                         .from('daily_activity')
-                         .select('*')
-                         .eq('user_id', user.id)
-                         .gte('activity_date', sevenDaysAgo.toISOString().split('T')[0])
-                         .order('activity_date', { ascending: false });
-
-                    if (activityError) {
-                         console.error('Error fetching recent activity:', activityError);
-                    }
-
-                    // Format total learning time (convert minutes to hours and minutes)
-                    const totalMinutes = userProgress.total_learning_time || 0;
-                    const hours = Math.floor(totalMinutes / 60);
-                    const minutes = totalMinutes % 60;
-
-                    // Return formatted progress data
-                    return {
-                         completedLessons: userProgress.total_lessons_completed || 0,
-                         totalLessons,
-                         completedProjects: userProgress.total_projects_completed || 0,
-                         totalProjects: 0, // TODO: Calculate from roadmap
-                         roadmapCompletionPercentage,
+               if (createError) {
+                    console.error('Error creating user progress:', createError);
+                    // Return default values if we can't create the record
+                    return NextResponse.json({
+                         completedLessons: 0,
+                         totalLessons: 0,
+                         completedProjects: 0,
+                         totalProjects: 0,
+                         roadmapCompletionPercentage: 0,
                          totalTime: {
-                              minutes: totalMinutes,
-                              formatted: `${hours}h ${minutes}m`,
-                              hours,
-                              minutesRemainder: minutes,
+                              minutes: 0,
+                              formatted: '0h 0m',
+                              hours: 0,
+                              minutesRemainder: 0,
                          },
-                         currentStreak,
-                         longestStreak: userProgress.longest_streak || 0,
-                         difficultyLevel: userProgress.difficulty_level || 1,
-                         lastActivityDate: userProgress.last_activity_date,
-                         recentActivity: recentActivity || [],
-                    };
+                         currentStreak: 0,
+                         longestStreak: 0,
+                         difficultyLevel: 1,
+                         lastActivityDate: null,
+                         recentActivity: [],
+                    });
                }
-          );
 
-          return NextResponse.json(progressData);
+               userProgress = newProgress;
+          }
+
+          // Fetch current roadmap to calculate completion percentage
+          const { data: roadmap } = await supabase
+               .from('roadmaps')
+               .select('id')
+               .eq('user_id', user.id)
+               .eq('status', 'active')
+               .single();
+
+          let roadmapCompletionPercentage = 0;
+          let totalLessons = 0;
+
+          if (roadmap) {
+               // Count total lessons in roadmap
+               const { count: lessonCount } = await supabase
+                    .from('lessons')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('roadmap_id', roadmap.id);
+
+               totalLessons = lessonCount || 0;
+
+               // Calculate completion percentage
+               if (totalLessons > 0) {
+                    roadmapCompletionPercentage = Math.round(
+                         (userProgress.total_lessons_completed / totalLessons) * 100
+                    );
+               }
+          }
+
+          // Calculate current streak from daily_activity
+          const currentStreak = await calculateCurrentStreak(supabase, user.id);
+
+          // Fetch recent activity (last 7 days)
+          const sevenDaysAgo = new Date();
+          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+          const { data: recentActivity } = await supabase
+               .from('daily_activity')
+               .select('*')
+               .eq('user_id', user.id)
+               .gte('activity_date', sevenDaysAgo.toISOString().split('T')[0])
+               .order('activity_date', { ascending: false });
+
+          // Format total learning time (convert minutes to hours and minutes)
+          const totalMinutes = userProgress.total_learning_time || 0;
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+
+          // Return formatted progress data
+          return NextResponse.json({
+               completedLessons: userProgress.total_lessons_completed || 0,
+               totalLessons,
+               completedProjects: userProgress.total_projects_completed || 0,
+               totalProjects: 0,
+               roadmapCompletionPercentage,
+               totalTime: {
+                    minutes: totalMinutes,
+                    formatted: `${hours}h ${minutes}m`,
+                    hours,
+                    minutesRemainder: minutes,
+               },
+               currentStreak,
+               longestStreak: userProgress.longest_streak || 0,
+               difficultyLevel: userProgress.difficulty_level || 1,
+               lastActivityDate: userProgress.last_activity_date,
+               recentActivity: recentActivity || [],
+          });
      } catch (error) {
           console.error('Error in GET /api/progress:', error);
           return NextResponse.json(

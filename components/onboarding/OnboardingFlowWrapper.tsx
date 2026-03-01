@@ -14,12 +14,19 @@ export default function OnboardingFlowWrapper() {
 
      const handleComplete = async (data: OnboardingData) => {
           try {
+               // Map the field names to match the API expectations
+               const payload = {
+                    learningGoal: data.goal,
+                    timeCommitment: data.timeCommitment,
+                    experienceLevel: data.experienceLevel,
+               };
+
                const response = await fetch('/api/onboarding/submit', {
                     method: 'POST',
                     headers: {
                          'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data),
+                    body: JSON.stringify(payload),
                });
 
                if (!response.ok) {
