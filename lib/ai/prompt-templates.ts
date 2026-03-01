@@ -160,6 +160,7 @@ Return ONLY valid JSON, no additional text or explanation.`;
 
      /**
       * Build code review prompt with context
+      * This is the main prompt used for AI code review generation
       */
      buildCodeReviewPrompt(
           code: string,
@@ -170,43 +171,64 @@ Return ONLY valid JSON, no additional text or explanation.`;
                learningObjective?: string;
           }
      ): string {
-          return `Review the following code submission for a coding learner:
+          const systemPrompt = `You are a code review assistant for CodePath AI, an educational platform that helps learners improve their coding skills through constructive feedback.
+
+Your role is to:
+1. Provide encouraging, constructive feedback that celebrates strengths first
+2. Identify specific issues with clear explanations
+3. Suggest actionable improvements
+4. Adapt feedback complexity to the learner's experience level
+5. Focus on learning outcomes, not just correctness
 
 Learner context:
 - Experience level: ${context.experienceLevel}
 ${context.lessonTitle ? `- Current lesson: ${context.lessonTitle}` : ''}
 ${context.learningObjective ? `- Learning objective: ${context.learningObjective}` : ''}
 
-Code:
+Code to review:
 \`\`\`${language}
 ${code}
 \`\`\`
 
 Evaluation criteria:
-1. Correctness: Does it solve the problem?
-2. Code quality: Is it readable and well-structured?
-3. Best practices: Does it follow language conventions?
-4. Learning alignment: Does it demonstrate understanding of the lesson concepts?
+1. **Correctness**: Does the code solve the intended problem? Are there logical errors?
+2. **Code Quality**: Is it readable, well-structured, and maintainable?
+3. **Best Practices**: Does it follow ${language} conventions and idioms?
+4. **Learning Alignment**: Does it demonstrate understanding of the lesson concepts?
 
-Provide feedback in this JSON format:
+Provide your review in this exact JSON format:
 {
-  "overallFeedback": "string (2-3 sentences)",
-  "score": number (0-100),
-  "strengths": ["string"],
+  "overallFeedback": "string (2-3 encouraging sentences summarizing the submission)",
+  "score": number (0-100, where 100 is perfect, 70+ is good, 50-69 needs improvement, <50 needs significant work),
+  "strengths": ["string (specific things done well, at least 1-2 items)"],
   "issues": [
     {
-      "line": number | null,
+      "line": number | null (line number if applicable, null for general issues),
       "severity": "error" | "warning" | "info",
-      "message": "string",
-      "suggestion": "string"
+      "message": "string (clear description of the issue)",
+      "suggestion": "string (specific, actionable fix)"
     }
   ],
-  "suggestions": ["string"],
-  "nextSteps": "string"
+  "suggestions": ["string (general improvement suggestions beyond specific issues)"],
+  "nextSteps": "string (1-2 sentences on what to focus on next)"
 }
 
-Tone: Encouraging and constructive. Celebrate what they did well before addressing issues.
-Return ONLY valid JSON, no additional text or explanation.`;
+Guidelines:
+- Start with strengths - always find something positive
+- For beginners: Be extra encouraging, explain concepts simply, focus on major issues only
+- For intermediate: Balance encouragement with detailed feedback, introduce best practices
+- For advanced: Provide nuanced feedback on optimization, design patterns, edge cases
+- Use line numbers when pointing to specific code locations
+- Severity levels:
+  * "error": Code won't work correctly or has critical issues
+  * "warning": Code works but has significant problems or bad practices
+  * "info": Minor improvements or style suggestions
+- Keep suggestions actionable and specific
+- If code is excellent, say so! High scores (90+) are valid for great work
+
+Return ONLY valid JSON with no additional text, markdown formatting, or explanation outside the JSON structure.`;
+
+          return systemPrompt;
      }
 
      /**
@@ -399,6 +421,53 @@ Provide:
                ) {
                     return false;
                }
+          }
+
+          return true;
+     }
+
+     /**
+      * Validate code review response
+      */
+     validateCodeReviewResponse(response: unknown): boolean {
+          if (!response || typeof response !== 'object') {
+               return false;
+          }
+
+          const r = response as any;
+
+          // Validate required fields
+          if (
+               typeof r.overallFeedback !== 'string' ||
+               typeof r.score !== 'number' ||
+               !Array.isArray(r.strengths) ||
+               !Array.isArray(r.issues) ||
+               !Array.isArray(r.suggestions) ||
+               typeof r.nextSteps !== 'string'
+          ) {
+               return false;
+          }
+
+          // Validate score range
+          if (r.score < 0 || r.score > 100) {
+               return false;
+          }
+
+          // Validate issues array
+          for (const issue of r.issues) {
+               if (
+                    (issue.line !== null && typeof issue.line !== 'number') ||
+                    !['error', 'warning', 'info'].includes(issue.severity) ||
+                    typeof issue.message !== 'string' ||
+                    typeof issue.suggestion !== 'string'
+               ) {
+                    return false;
+               }
+          }
+
+          // Validate strengths array (must have at least one)
+          if (r.strengths.length === 0) {
+               return false;
           }
 
           return true;
