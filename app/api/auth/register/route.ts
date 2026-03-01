@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase';
+import { createServerClient, createAdminClient } from '@/lib/supabase';
 import { z } from 'zod';
 import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 import { validatePasswordStrength } from '@/lib/validation/password';
@@ -89,8 +89,9 @@ export async function POST(request: NextRequest) {
                );
           }
 
-          // Create user profile in database
-          const { error: profileError } = await supabase
+          // Create user profile in database using admin client to bypass RLS
+          const adminClient = createAdminClient();
+          const { error: profileError } = await adminClient
                .from('user_profiles')
                .insert({
                     id: authData.user.id,

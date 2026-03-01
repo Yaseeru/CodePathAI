@@ -36,13 +36,27 @@
   --color-code-bg: #1e293b;
   --color-code-text: #e2e8f0;
   
-  /* Spacing Scale */
-  --spacing-xs: 0.25rem;   /* 4px */
-  --spacing-sm: 0.5rem;    /* 8px */
+  /* Spacing Scale - Modern, consistent spacing */
+  --spacing-xs: 0.5rem;    /* 8px */
+  --spacing-sm: 0.75rem;   /* 12px */
   --spacing-md: 1rem;      /* 16px */
   --spacing-lg: 1.5rem;    /* 24px */
   --spacing-xl: 2rem;      /* 32px */
   --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+  
+  /* Component Spacing */
+  --container-padding-mobile: 1rem;    /* 16px */
+  --container-padding-tablet: 1.5rem;  /* 24px */
+  --container-padding-desktop: 2rem;   /* 32px */
+  
+  --card-padding-mobile: 1rem;         /* 16px */
+  --card-padding-tablet: 1.5rem;       /* 24px */
+  --card-padding-desktop: 2rem;        /* 32px */
+  
+  --section-gap-mobile: 1.5rem;        /* 24px */
+  --section-gap-tablet: 2rem;          /* 32px */
+  --section-gap-desktop: 3rem;         /* 48px */
   
   /* Typography - Using relative units (rem/em) */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
@@ -124,8 +138,30 @@
   --font-mono: var(--font-mono);
 }
 
-* {
+/* More targeted CSS reset - preserve component-specific styling */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+/* Only remove default margins/padding from elements that commonly need it */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+dl,
+dd,
+blockquote,
+figure,
+fieldset,
+pre {
   margin: 0;
   padding: 0;
 }
@@ -185,8 +221,8 @@ h6 {
   font-weight: 600;
 }
 
-/* Body text - ensure 14px-18px range */
-p, li, span, div {
+/* Body text - ensure 14px-18px range for paragraph elements */
+p, li {
   font-size: var(--font-size-base); /* 16px */
   line-height: var(--line-height-normal);
 }
@@ -378,4 +414,108 @@ pre code {
 
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
+}
+
+/* Modern Spacing Utilities */
+.container-padding {
+  padding-left: var(--container-padding-mobile);
+  padding-right: var(--container-padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .container-padding {
+    padding-left: var(--container-padding-tablet);
+    padding-right: var(--container-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-padding {
+    padding-left: var(--container-padding-desktop);
+    padding-right: var(--container-padding-desktop);
+  }
+}
+
+.card-padding {
+  padding: var(--card-padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .card-padding {
+    padding: var(--card-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-padding {
+    padding: var(--card-padding-desktop);
+  }
+}
+
+.section-gap {
+  gap: var(--section-gap-mobile);
+}
+
+@media (min-width: 768px) {
+  .section-gap {
+    gap: var(--section-gap-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-gap {
+    gap: var(--section-gap-desktop);
+  }
+}
+
+/* Form Spacing */
+.form-field-spacing {
+  margin-bottom: 1.5rem;
+}
+
+.form-label-spacing {
+  margin-bottom: 0.5rem;
+}
+
+.form-input-spacing {
+  padding: 0.75rem 1rem;
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.card-hover {
+  transition: all 0.2s ease;
+}
+
+.card-hover:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Button Spacing */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: var(--font-size-sm);
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: var(--font-size-lg);
 }

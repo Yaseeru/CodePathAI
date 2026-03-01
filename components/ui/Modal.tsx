@@ -61,18 +61,18 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
                />
 
                {/* Modal */}
-               <div className="flex min-h-full items-center justify-center p-4">
+               <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
                     <div
                          ref={modalRef}
-                         className={`relative bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} transform transition-all`}
+                         className={`relative bg-surface rounded-xl shadow-xl w-full ${sizeClasses[size]} transform transition-all border border-border`}
                          onClick={(e) => e.stopPropagation()}
                     >
                          {/* Header */}
-                         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                              <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+                         <div className="flex items-center justify-between p-6 sm:p-8 border-b border-border">
+                              <h2 className="text-2xl sm:text-3xl font-bold text-text-primary">{title}</h2>
                               <button
                                    onClick={onClose}
-                                   className="text-gray-400 hover:text-gray-600 transition-colors"
+                                   className="text-text-secondary hover:text-text-primary transition-colors p-2 rounded-lg hover:bg-surface"
                                    aria-label="Close modal"
                               >
                                    <svg
@@ -92,7 +92,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
                          </div>
 
                          {/* Content */}
-                         <div className="p-6">{children}</div>
+                         <div className="p-6 sm:p-8">{children}</div>
                     </div>
                </div>
           </div>

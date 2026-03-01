@@ -16,10 +16,10 @@ export default function GoalInput({ value, onChange, error }: GoalInputProps) {
 
   return (
     <div className="space-y-2">
-      <label htmlFor="goal" className="block text-sm font-medium text-gray-700">
+      <label htmlFor="goal" className="block text-sm font-medium text-text-primary">
         What do you want to build or achieve?
       </label>
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-text-secondary">
         Describe your coding goal in your own words. Be specific!
       </p>
       <textarea
@@ -27,8 +27,8 @@ export default function GoalInput({ value, onChange, error }: GoalInputProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Example: I want to build a personal portfolio website to showcase my projects..."
-        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-          error ? 'border-red-500' : 'border-gray-300'
+        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none text-text-primary bg-surface ${
+          error ? 'border-error' : 'border-border'
         }`}
         rows={5}
       />
@@ -36,16 +36,16 @@ export default function GoalInput({ value, onChange, error }: GoalInputProps) {
         <span
           className={`text-sm ${
             charCount < minLength
-              ? 'text-gray-400'
+              ? 'text-text-tertiary'
               : isValid
-              ? 'text-green-600'
-              : 'text-red-600'
+              ? 'text-success'
+              : 'text-error'
           }`}
         >
           {charCount} / {maxLength} characters
           {charCount < minLength && ` (minimum ${minLength})`}
         </span>
-        {error && <span className="text-sm text-red-600">{error}</span>}
+        {error && <span className="text-sm text-error">{error}</span>}
       </div>
     </div>
   );

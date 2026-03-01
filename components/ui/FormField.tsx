@@ -23,20 +23,20 @@ type FormFieldProps = InputFormFieldProps | TextareaFormFieldProps;
 export function FormField(props: FormFieldProps) {
      const { label, error, required, helperText, className = '', type = 'text', ...inputProps } = props;
 
-     const baseInputClasses = `w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
+     const baseInputClasses = `w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors ${error ? 'border-error focus:ring-error' : 'border-border'
           }`;
 
      const isTextarea = type === 'textarea';
 
      return (
           <div className={`space-y-2 ${className}`}>
-               <label htmlFor={inputProps.id || inputProps.name} className="block text-sm font-medium text-gray-700">
+               <label htmlFor={inputProps.id || inputProps.name} className="block text-sm font-medium text-text-primary">
                     {label}
                     {required && <span className="text-red-500 ml-1">*</span>}
                </label>
 
                {helperText && (
-                    <p className="text-sm text-gray-500">{helperText}</p>
+                    <p className="text-sm text-text-secondary">{helperText}</p>
                )}
 
                {isTextarea ? (
@@ -59,7 +59,7 @@ export function FormField(props: FormFieldProps) {
                {error && (
                     <p
                          id={`${inputProps.id || inputProps.name}-error`}
-                         className="text-sm text-red-600 flex items-center gap-1"
+                         className="text-sm text-error flex items-center gap-1"
                          role="alert"
                     >
                          <span>⚠️</span>
@@ -91,20 +91,20 @@ export function SelectFormField({
 }: SelectFormFieldProps & Omit<InputHTMLAttributes<HTMLSelectElement>, 'onChange' | 'value' | 'className'>) {
      return (
           <div className={`space-y-2 ${className}`}>
-               <label htmlFor={selectProps.id || selectProps.name} className="block text-sm font-medium text-gray-700">
+               <label htmlFor={selectProps.id || selectProps.name} className="block text-sm font-medium text-text-primary">
                     {label}
                     {required && <span className="text-red-500 ml-1">*</span>}
                </label>
 
                {helperText && (
-                    <p className="text-sm text-gray-500">{helperText}</p>
+                    <p className="text-sm text-text-secondary">{helperText}</p>
                )}
 
                <select
                     {...selectProps}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors ${error ? 'border-error focus:ring-error' : 'border-border'
                          }`}
                     aria-invalid={!!error}
                     aria-describedby={error ? `${selectProps.id || selectProps.name}-error` : undefined}
@@ -124,7 +124,7 @@ export function SelectFormField({
                {error && (
                     <p
                          id={`${selectProps.id || selectProps.name}-error`}
-                         className="text-sm text-red-600 flex items-center gap-1"
+                         className="text-sm text-error flex items-center gap-1"
                          role="alert"
                     >
                          <span>⚠️</span>

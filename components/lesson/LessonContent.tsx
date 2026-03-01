@@ -60,24 +60,24 @@ export default function LessonContent({ lesson }: LessonContentProps) {
 
      return (
           <div className="h-full overflow-y-auto bg-white">
-               <div className="max-w-4xl mx-auto p-6">
+               <div className="max-w-4xl mx-auto p-6 sm:p-8 lg:p-10">
                     {/* Lesson Header */}
-                    <div className="mb-8">
-                         <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    <div className="mb-10">
+                         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
                               {lesson.title}
                          </h1>
-                         <p className="text-lg text-gray-600">{lesson.description}</p>
+                         <p className="text-lg text-gray-600 leading-relaxed">{lesson.description}</p>
                     </div>
 
                     {/* Learning Objectives */}
                     {lesson.content.learningObjectives.length > 0 && (
-                         <div className="mb-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
-                              <h2 className="text-xl font-semibold text-gray-900 mb-3">
+                         <div className="mb-10 bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                              <h2 className="text-xl font-semibold text-gray-900 mb-4">
                                    Learning Objectives
                               </h2>
-                              <ul className="space-y-2">
+                              <ul className="space-y-3">
                                    {lesson.content.learningObjectives.map((objective, index) => (
-                                        <li key={index} className="flex items-start gap-2">
+                                        <li key={index} className="flex items-start gap-3">
                                              <svg
                                                   className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0"
                                                   fill="none"
@@ -91,7 +91,7 @@ export default function LessonContent({ lesson }: LessonContentProps) {
                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                                                   />
                                              </svg>
-                                             <span className="text-gray-700">{objective}</span>
+                                             <span className="text-gray-700 leading-relaxed">{objective}</span>
                                         </li>
                                    ))}
                               </ul>

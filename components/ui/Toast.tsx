@@ -28,32 +28,32 @@ export function Toast({ id, type, title, message, action, duration = 5000, onClo
 
      const typeStyles = {
           success: {
-               bg: 'bg-green-50',
-               border: 'border-green-200',
-               text: 'text-green-800',
+               bg: 'bg-success/10',
+               border: 'border-success/30',
+               text: 'text-success',
                icon: '✓',
-               iconBg: 'bg-green-500',
+               iconBg: 'bg-success',
           },
           error: {
-               bg: 'bg-red-50',
-               border: 'border-red-200',
-               text: 'text-red-800',
+               bg: 'bg-error/10',
+               border: 'border-error/30',
+               text: 'text-error',
                icon: '⚠️',
-               iconBg: 'bg-red-500',
+               iconBg: 'bg-error',
           },
           warning: {
-               bg: 'bg-yellow-50',
-               border: 'border-yellow-200',
-               text: 'text-yellow-800',
+               bg: 'bg-warning/10',
+               border: 'border-warning/30',
+               text: 'text-warning',
                icon: '⚡',
-               iconBg: 'bg-yellow-500',
+               iconBg: 'bg-warning',
           },
           info: {
-               bg: 'bg-blue-50',
-               border: 'border-blue-200',
-               text: 'text-blue-800',
+               bg: 'bg-info/10',
+               border: 'border-info/30',
+               text: 'text-info',
                icon: 'ℹ️',
-               iconBg: 'bg-blue-500',
+               iconBg: 'bg-info',
           },
      };
 
@@ -81,7 +81,7 @@ export function Toast({ id, type, title, message, action, duration = 5000, onClo
                               setIsVisible(false);
                               setTimeout(() => onClose(id), 300);
                          }}
-                         className={`flex-shrink-0 ${styles.text} hover:opacity-70 transition-opacity`}
+                         className={`${styles.text} hover:opacity-70 transition-opacity`}
                          aria-label="Close notification"
                     >
                          ✕

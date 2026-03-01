@@ -61,23 +61,23 @@ export default function StatsCard({
      const colors = themeColors[colorTheme];
 
      return (
-          <div className={`${colors.bg} rounded-lg p-6 shadow-sm`}>
+          <div className={`${colors.bg} rounded-xl p-6 lg:p-8 shadow-sm border ${colors.iconBg} hover:shadow-md transition-all`}>
                <div className="flex items-start justify-between">
                     <div className="flex-1">
-                         <p className={`text-sm font-medium ${colors.titleText} mb-2`}>
+                         <p className={`text-sm font-medium ${colors.titleText} mb-3`}>
                               {title}
                          </p>
-                         <div className="flex items-baseline gap-2">
-                              <p className={`text-3xl font-bold ${colors.valueText}`}>
+                         <div className="flex items-baseline gap-3">
+                              <p className={`text-3xl lg:text-4xl font-bold ${colors.valueText}`}>
                                    {value}
                               </p>
                               {trend !== undefined && (
                                    <span
                                         className={`text-sm font-medium ${trend > 0
-                                                  ? 'text-green-600'
-                                                  : trend < 0
-                                                       ? 'text-red-600'
-                                                       : 'text-gray-600'
+                                             ? 'text-green-600'
+                                             : trend < 0
+                                                  ? 'text-red-600'
+                                                  : 'text-gray-600'
                                              }`}
                                    >
                                         {trend > 0 && '↑'}
@@ -88,8 +88,8 @@ export default function StatsCard({
                               )}
                          </div>
                     </div>
-                    <div className={`${colors.iconBg} rounded-lg p-3`}>
-                         <div className={`${colors.iconText} w-6 h-6`}>{icon}</div>
+                    <div className={`${colors.iconBg} rounded-xl p-3 lg:p-4`}>
+                         <div className={`${colors.iconText} w-6 h-6 lg:w-7 lg:h-7`}>{icon}</div>
                     </div>
                </div>
           </div>

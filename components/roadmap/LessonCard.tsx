@@ -65,7 +65,7 @@ export default function LessonCard({ lesson, status, onClick }: LessonCardProps)
 
      return (
           <div
-               className={`relative ml-16 p-4 border-2 rounded-lg transition-all ${styles.container}`}
+               className={`relative ml-16 p-5 lg:p-6 border-2 rounded-xl transition-all hover:shadow-md ${styles.container}`}
                onClick={onClick}
                role="button"
                tabIndex={status === 'locked' ? -1 : 0}
@@ -77,47 +77,47 @@ export default function LessonCard({ lesson, status, onClick }: LessonCardProps)
                }}
           >
                {/* Status Icon (positioned on the timeline) */}
-               <div className="absolute -left-[52px] top-1/2 -translate-y-1/2 bg-white rounded-full p-1">
+               <div className="absolute -left-[52px] top-1/2 -translate-y-1/2 bg-white rounded-full p-1 shadow-sm">
                     {styles.icon}
                </div>
 
                {/* Lesson Content */}
-               <div className="space-y-2">
+               <div className="space-y-3">
                     {/* Title */}
-                    <h3 className={`text-lg font-medium ${styles.title}`}>
+                    <h3 className={`text-lg font-semibold ${styles.title}`}>
                          {lesson.title}
                     </h3>
 
                     {/* Description */}
-                    <p className={`text-sm ${styles.description} line-clamp-2`}>
+                    <p className={`text-sm ${styles.description} line-clamp-2 leading-relaxed`}>
                          {lesson.description}
                     </p>
 
                     {/* Metadata Row */}
-                    <div className="flex items-center gap-4 text-sm">
+                    <div className="flex items-center gap-4 text-sm pt-2">
                          {/* Duration */}
-                         <div className="flex items-center gap-1 text-gray-600">
+                         <div className="flex items-center gap-1.5 text-gray-600">
                               <Clock className="w-4 h-4" />
                               <span>{formatDuration(lesson.estimatedDuration)}</span>
                          </div>
 
                          {/* Difficulty */}
-                         <div className="flex items-center gap-1">
+                         <div className="flex items-center gap-1.5">
                               <BarChart3 className="w-4 h-4 text-gray-600" />
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(lesson.difficultyLevel)}`}>
+                              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getDifficultyColor(lesson.difficultyLevel)}`}>
                                    {getDifficultyLabel(lesson.difficultyLevel)}
                               </span>
                          </div>
 
                          {/* Language */}
-                         <div className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs font-medium uppercase">
+                         <div className="px-2.5 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium uppercase">
                               {lesson.language}
                          </div>
                     </div>
 
                     {/* Prerequisites Indicator */}
                     {lesson.prerequisites.length > 0 && status === 'locked' && (
-                         <div className="flex items-center gap-1 text-xs text-gray-500 mt-2">
+                         <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-3">
                               <Lock className="w-3 h-3" />
                               <span>Complete {lesson.prerequisites.length} prerequisite{lesson.prerequisites.length > 1 ? 's' : ''} to unlock</span>
                          </div>

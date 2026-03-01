@@ -54,28 +54,28 @@ export default function Navigation() {
      }, [isMobileMenuOpen]);
 
      return (
-          <nav className="bg-surface border-b border-border" role="navigation" aria-label="Main navigation">
+          <nav className="bg-surface border-b border-border sticky top-0 z-50" role="navigation" aria-label="Main navigation">
                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Mobile-first: min-h-[44px] ensures touch target size */}
-                    <div className="flex justify-between items-center h-14 sm:h-16">
+                    <div className="flex justify-between items-center h-16 lg:h-20">
                          {/* Logo - responsive sizing */}
                          <div className="flex items-center">
                               <Link
                                    href="/"
-                                   className="flex items-center space-x-2 min-h-[44px] min-w-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg"
+                                   className="flex items-center space-x-3 min-h-[44px] min-w-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg px-2 -mx-2"
                                    aria-label="CodePath AI Home"
                               >
-                                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
-                                        <span className="text-white font-bold text-base sm:text-lg" aria-hidden="true">C</span>
+                                   <div className="w-10 h-10 lg:w-12 lg:h-12 bg-primary rounded-lg flex items-center justify-center shadow-sm">
+                                        <span className="text-white font-bold text-lg lg:text-xl" aria-hidden="true">C</span>
                                    </div>
-                                   <span className="text-lg sm:text-xl font-bold text-text-primary hidden xs:inline">
+                                   <span className="text-xl lg:text-2xl font-bold text-text-primary hidden sm:inline">
                                         CodePath AI
                                    </span>
                               </Link>
                          </div>
 
                          {/* Desktop Navigation - hidden on mobile and tablet */}
-                         <div className="hidden lg:flex items-center space-x-6 xl:space-x-8" role="menubar">
+                         <div className="hidden lg:flex items-center space-x-8" role="menubar">
                               <Link
                                    href="/dashboard"
                                    className="text-text-secondary hover:text-text-primary transition-colors text-sm lg:text-base py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
