@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 import { z } from 'zod';
+import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 
 // Validation schema for registration
 const registerSchema = z.object({
@@ -71,6 +72,16 @@ export async function POST(request: NextRequest) {
                     { status: 500 }
                );
           }
+
+          // Track user registration event
+          await trackServerEvent({
+               user_id: authData.user.id,
+               event_type: ServerAnalyticsEvents.USER_REGISTERED,
+               event_data: {
+                    email,
+                    registration_date: new Date().toISOString(),
+               },
+          });
 
           return NextResponse.json(
                {

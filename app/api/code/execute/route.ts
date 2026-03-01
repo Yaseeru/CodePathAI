@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase';
 import { z } from 'zod';
 import { codeExecutionService } from '@/lib/code/executor';
 import { ErrorParser } from '@/lib/code/error-parser';
+import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 
 const executeCodeSchema = z.object({
      code: z.string().min(1).max(50000), // 50KB limit
@@ -68,6 +69,18 @@ export async function POST(request: NextRequest) {
                     language
                );
           }
+
+          // Track code execution event
+          await trackServerEvent({
+               user_id: user.id,
+               event_type: ServerAnalyticsEvents.CODE_EXECUTED,
+               event_data: {
+                    language,
+                    success: result.exitCode === 0 && !result.error,
+                    execution_time: result.executionTime,
+                    has_error: !!parsedError,
+               },
+          });
 
           // Parse execution results (stdout, stderr, exit code, time)
           return NextResponse.json({

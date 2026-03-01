@@ -11,6 +11,7 @@ import { promptTemplateService } from '@/lib/ai/prompt-templates';
 import { roadmapService } from '@/lib/services/roadmap-service';
 import { createServerClient } from '@/lib/supabase';
 import { cookies } from 'next/headers';
+import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 
 // Validation schema
 const pivotRequestSchema = z.object({
@@ -75,6 +76,15 @@ export async function POST(request: NextRequest) {
                .select('current_roadmap_id')
                .eq('user_id', user.id)
                .single();
+
+          // Get old goal for tracking
+          const { data: oldProfile } = await supabase
+               .from('user_profiles')
+               .select('learning_goal')
+               .eq('id', user.id)
+               .single();
+
+          const oldGoal = oldProfile?.learning_goal || '';
 
           // Archive current roadmap if it exists
           if (userProgress?.current_roadmap_id) {
@@ -155,6 +165,18 @@ export async function POST(request: NextRequest) {
                     console.error('Error updating user profile:', updateProfileError);
                     // Continue anyway - roadmap is already created
                }
+
+               // Track goal pivot event
+               await trackServerEvent({
+                    user_id: user.id,
+                    event_type: ServerAnalyticsEvents.GOAL_PIVOTED,
+                    event_data: {
+                         old_goal: oldGoal,
+                         new_goal: newGoal,
+                         old_roadmap_id: userProgress?.current_roadmap_id,
+                         new_roadmap_id: result.roadmapId,
+                    },
+               });
 
                // Return successful response
                return NextResponse.json(

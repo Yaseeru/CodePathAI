@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
+import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 
 /**
  * POST /api/lessons/:id/start
@@ -110,6 +111,17 @@ export async function POST(
                     { status: 500 }
                );
           }
+
+          // Track lesson start event
+          await trackServerEvent({
+               user_id: user.id,
+               event_type: ServerAnalyticsEvents.LESSON_STARTED,
+               event_data: {
+                    lesson_id: lessonId,
+                    roadmap_id: lesson.roadmap_id,
+                    started_at: now,
+               },
+          });
 
           return NextResponse.json({
                success: true,

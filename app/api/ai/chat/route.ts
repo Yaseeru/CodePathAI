@@ -9,6 +9,7 @@ import { claudeService } from '@/lib/ai/claude';
 import { aiContextBuilder } from '@/lib/ai/context-builder';
 import { promptTemplateService } from '@/lib/ai/prompt-templates';
 import { z } from 'zod';
+import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 
 // Request validation schema
 const chatRequestSchema = z.object({
@@ -80,6 +81,17 @@ export async function POST(req: NextRequest) {
           if (userMessageError) {
                throw new Error('Failed to save user message');
           }
+
+          // Track chat message event
+          await trackServerEvent({
+               user_id: user.id,
+               event_type: ServerAnalyticsEvents.CHAT_MESSAGE_SENT,
+               event_data: {
+                    conversation_id: activeConversationId,
+                    lesson_id: lessonId,
+                    message_length: message.length,
+               },
+          });
 
           // Create streaming response
           const encoder = new TextEncoder();

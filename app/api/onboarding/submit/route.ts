@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient, getUser } from '@/lib/supabase';
 import { z } from 'zod';
+import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 
 // Validation schema for onboarding submission
 const onboardingSchema = z.object({
@@ -86,6 +87,18 @@ export async function POST(request: NextRequest) {
                experience_level: string | null;
                onboarding_completed: boolean;
           };
+
+          // Track onboarding completion event
+          await trackServerEvent({
+               user_id: user.id,
+               event_type: ServerAnalyticsEvents.ONBOARDING_COMPLETED,
+               event_data: {
+                    learning_goal: learningGoal,
+                    time_commitment: timeCommitment,
+                    experience_level: experienceLevel,
+                    completion_date: new Date().toISOString(),
+               },
+          });
 
           return NextResponse.json(
                {

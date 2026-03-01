@@ -4,6 +4,7 @@ import {
      calculateDifficultyAdjustment,
      applyDifficultyAdjustment
 } from '@/lib/services/difficulty-adjustment';
+import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 
 /**
  * POST /api/lessons/:id/complete
@@ -193,6 +194,18 @@ export async function POST(
                     // Don't fail the request if difficulty adjustment fails
                }
           }
+
+          // Track lesson completion event
+          await trackServerEvent({
+               user_id: user.id,
+               event_type: ServerAnalyticsEvents.LESSON_COMPLETED,
+               event_data: {
+                    lesson_id: lessonId,
+                    roadmap_id: lesson.roadmap_id,
+                    completion_time: calculatedCompletionTime,
+                    completed_at: now,
+               },
+          });
 
           return NextResponse.json({
                success: true,

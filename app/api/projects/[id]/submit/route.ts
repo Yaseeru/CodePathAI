@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { claudeService } from '@/lib/ai/claude';
+import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
 
 // Validation schema
 const submitProjectSchema = z.object({
@@ -115,6 +116,18 @@ export async function POST(
                supabase
           ).catch((error) => {
                console.error('AI code review failed:', error);
+          });
+
+          // Track project submission event
+          await trackServerEvent({
+               user_id: user.id,
+               event_type: ServerAnalyticsEvents.PROJECT_SUBMITTED,
+               event_data: {
+                    project_id: projectId,
+                    roadmap_id: project.roadmap_id,
+                    language,
+                    code_length: code.length,
+               },
           });
 
           return NextResponse.json({
