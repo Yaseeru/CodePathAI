@@ -597,8 +597,8 @@ The implementation is organized into 5 major phases:
     - _Requirements: 9.1, 9.2_
 
 
-- [ ] 18. Build progress dashboard
-  - [ ] 18.1 Create ProgressDashboard component
+- [x] 18. Build progress dashboard
+  - [x] 18.1 Create ProgressDashboard component
     - Display learning goal prominently
     - Show roadmap completion percentage with progress bar
     - Display lessons completed count
@@ -630,21 +630,21 @@ The implementation is organized into 5 major phases:
     - **Property 30: Streak calculation accuracy**
     - **Validates: Requirements 10.6**
 
-  - [ ] 18.7 Create StatsCard component
+  - [x] 18.7 Create StatsCard component
     - Display stat title and icon
     - Show large value with formatting
     - Add optional trend indicator (up/down arrow)
     - Support different color themes
     - _Requirements: 10.1_
 
-  - [ ] 18.8 Create StreakCalendar component
+  - [x] 18.8 Create StreakCalendar component
     - Build GitHub-style contribution graph
     - Show last 90 days of activity
     - Color code by activity level
     - Add hover tooltips with daily details
     - _Requirements: 10.6_
 
-  - [ ] 18.9 Create progress API endpoint
+  - [x] 18.9 Create progress API endpoint
     - Create GET /api/progress endpoint
     - Calculate all dashboard metrics from database
     - Calculate current streak from daily_activity
