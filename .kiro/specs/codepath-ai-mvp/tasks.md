@@ -710,19 +710,19 @@ The implementation is organized into 5 major phases:
     - Test boundary conditions (level 1 and 5)
     - _Requirements: 11.2, 11.3_
 
-- [ ] 20. Checkpoint - Adaptive features working
+- [x] 20. Checkpoint - Adaptive features working
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 21. Implement re-engagement system
-  - [ ] 21.1 Create inactivity detection system
+- [x] 21. Implement re-engagement system
+  - [x] 21.1 Create inactivity detection system
     - Create scheduled job to check daily_activity
     - Identify users inactive for 3+ days
     - Filter out users who opted out of emails
     - Query user_progress for personalization data
     - _Requirements: 12.1, 12.5_
 
-  - [ ] 21.2 Create re-engagement email templates
+  - [x] 21.2 Create re-engagement email templates
     - Design email template with user's goal
     - Include current progress stats
     - Add direct link to next lesson
@@ -738,7 +738,7 @@ The implementation is organized into 5 major phases:
     - **Property 36: Reminder link inclusion**
     - **Validates: Requirements 12.3**
 
-  - [ ] 21.5 Implement email sending logic
+  - [x] 21.5 Implement email sending logic
     - Create sendReengagementEmails() function
     - Check last email sent timestamp
     - Enforce 3-day minimum between emails
@@ -758,7 +758,7 @@ The implementation is organized into 5 major phases:
     - **Property 39: Email tracking persistence**
     - **Validates: Requirements 12.6**
 
-  - [ ] 21.9 Create email preferences UI
+  - [x] 21.9 Create email preferences UI
     - Add email preferences section to user settings
     - Add toggle for re-engagement emails
     - Save preferences to user_profiles

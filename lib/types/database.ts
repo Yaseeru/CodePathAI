@@ -23,6 +23,8 @@ export interface Database {
                          time_commitment: number | null
                          experience_level: string | null
                          onboarding_completed: boolean
+                         reengagement_emails_enabled: boolean
+                         last_reengagement_email_sent_at: string | null
                          created_at: string
                          updated_at: string
                     }
@@ -34,6 +36,8 @@ export interface Database {
                          time_commitment?: number | null
                          experience_level?: string | null
                          onboarding_completed?: boolean
+                         reengagement_emails_enabled?: boolean
+                         last_reengagement_email_sent_at?: string | null
                          created_at?: string
                          updated_at?: string
                     }
@@ -45,6 +49,8 @@ export interface Database {
                          time_commitment?: number | null
                          experience_level?: string | null
                          onboarding_completed?: boolean
+                         reengagement_emails_enabled?: boolean
+                         last_reengagement_email_sent_at?: string | null
                          created_at?: string
                          updated_at?: string
                     }
@@ -309,6 +315,44 @@ export interface Database {
                          role?: string
                          content?: string
                          context_snapshot?: Json | null
+                         created_at?: string
+                    }
+               }
+               email_tracking: {
+                    Row: {
+                         id: string
+                         user_id: string
+                         email_type: string
+                         email_id: string | null
+                         sent_at: string
+                         opened: boolean
+                         opened_at: string | null
+                         clicked: boolean
+                         clicked_at: string | null
+                         created_at: string
+                    }
+                    Insert: {
+                         id?: string
+                         user_id: string
+                         email_type: string
+                         email_id?: string | null
+                         sent_at?: string
+                         opened?: boolean
+                         opened_at?: string | null
+                         clicked?: boolean
+                         clicked_at?: string | null
+                         created_at?: string
+                    }
+                    Update: {
+                         id?: string
+                         user_id?: string
+                         email_type?: string
+                         email_id?: string | null
+                         sent_at?: string
+                         opened?: boolean
+                         opened_at?: string | null
+                         clicked?: boolean
+                         clicked_at?: string | null
                          created_at?: string
                     }
                }
