@@ -52,12 +52,23 @@ export function logError(
      context?: {
           feature?: string;
           userId?: string;
+          severity?: 'low' | 'medium' | 'high' | 'critical';
           extra?: Record<string, unknown>;
      }
 ) {
+     // Map severity to Sentry level
+     const levelMap = {
+          low: 'info' as const,
+          medium: 'warning' as const,
+          high: 'error' as const,
+          critical: 'fatal' as const,
+     };
+
      Sentry.captureException(error, {
+          level: context?.severity ? levelMap[context.severity] : 'error',
           tags: {
                feature: context?.feature || 'unknown',
+               severity: context?.severity || 'medium',
           },
           user: context?.userId ? { id: context.userId } : undefined,
           extra: context?.extra,
