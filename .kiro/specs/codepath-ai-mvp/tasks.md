@@ -256,8 +256,8 @@ The implementation is organized into 5 major phases:
     - Test locked lesson interaction
     - _Requirements: 3.6, 5.7_
 
-- [ ] 9. Implement Monaco code editor integration
-  - [ ] 9.1 Create CodeEditor component
+- [x] 9. Implement Monaco code editor integration
+  - [x] 9.1 Create CodeEditor component
     - Integrate Monaco Editor with Next.js (dynamic import, ssr: false)
     - Configure syntax highlighting for JavaScript, Python, HTML
     - Add auto-completion support
@@ -266,7 +266,7 @@ The implementation is organized into 5 major phases:
     - Configure keyboard shortcuts (Ctrl+S save, Ctrl+Enter run)
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ] 9.2 Implement code auto-save functionality
+  - [x] 9.2 Implement code auto-save functionality
     - Create POST /api/code/save endpoint
     - Implement auto-save every 30 seconds
     - Save code with lesson_id or project_id
@@ -278,7 +278,7 @@ The implementation is organized into 5 major phases:
     - **Property 17: Code persistence round-trip**
     - **Validates: Requirements 6.5, 6.6**
 
-  - [ ] 9.4 Create CodeOutput component
+  - [x] 9.4 Create CodeOutput component
     - Display stdout with monospace font
     - Display stderr with error styling
     - Show execution time
@@ -286,7 +286,7 @@ The implementation is organized into 5 major phases:
     - Add clear output button
     - _Requirements: 7.5, 7.6_
 
-  - [ ] 9.5 Create CodeControls component
+  - [x] 9.5 Create CodeControls component
     - Add Run button with loading state
     - Add Stop button (for long-running code)
     - Add Clear Output button
