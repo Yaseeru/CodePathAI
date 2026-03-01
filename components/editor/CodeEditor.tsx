@@ -157,11 +157,13 @@ export default function CodeEditor({
           <div
                ref={containerRef}
                className={`relative h-full w-full flex flex-col ${isFullscreen ? 'bg-[#1e1e1e]' : ''}`}
+               role="region"
+               aria-label="Code editor"
           >
                {/* Mobile-friendly control bar */}
-               <div className="flex items-center justify-between bg-[#1e1e1e] text-white px-2 sm:px-4 py-2 border-b border-gray-700">
+               <div className="flex items-center justify-between bg-[#1e1e1e] text-white px-2 sm:px-4 py-2 border-b border-gray-700" role="toolbar" aria-label="Code editor controls">
                     <div className="flex items-center space-x-2">
-                         <span className="text-xs sm:text-sm text-gray-400">
+                         <span className="text-xs sm:text-sm text-gray-400" role="status" aria-label={`Programming language: ${language}`}>
                               {language.toUpperCase()}
                          </span>
                     </div>
@@ -171,11 +173,12 @@ export default function CodeEditor({
                          {onSave && (
                               <button
                                    onClick={handleSave}
-                                   className="px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded text-xs sm:text-sm transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-                                   aria-label="Save code"
+                                   className="px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded text-xs sm:text-sm transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                   aria-label="Save code (Ctrl+S or Cmd+S)"
+                                   type="button"
                               >
                                    <span className="hidden sm:inline">Save</span>
-                                   <span className="sm:hidden">💾</span>
+                                   <span className="sm:hidden" aria-hidden="true">💾</span>
                               </button>
                          )}
 
@@ -183,11 +186,12 @@ export default function CodeEditor({
                          {onRun && (
                               <button
                                    onClick={handleRun}
-                                   className="px-3 py-2 bg-green-600 hover:bg-green-700 rounded text-xs sm:text-sm transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-                                   aria-label="Run code"
+                                   className="px-3 py-2 bg-green-600 hover:bg-green-700 rounded text-xs sm:text-sm transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                   aria-label="Run code (Ctrl+Enter or Cmd+Enter)"
+                                   type="button"
                               >
                                    <span className="hidden sm:inline">Run</span>
-                                   <span className="sm:hidden">▶️</span>
+                                   <span className="sm:hidden" aria-hidden="true">▶️</span>
                               </button>
                          )}
 
@@ -195,10 +199,12 @@ export default function CodeEditor({
                          {isMobile && (
                               <button
                                    onClick={toggleFullscreen}
-                                   className="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded text-xs sm:text-sm transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                                   className="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded text-xs sm:text-sm transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                                    aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                                   aria-pressed={isFullscreen}
+                                   type="button"
                               >
-                                   {isFullscreen ? '⤓' : '⤢'}
+                                   <span aria-hidden="true">{isFullscreen ? '⤓' : '⤢'}</span>
                               </button>
                          )}
                     </div>
@@ -206,13 +212,13 @@ export default function CodeEditor({
 
                {/* Saving indicator */}
                {isSaving && (
-                    <div className="absolute top-14 right-2 z-10 bg-green-500 text-white px-3 py-1 rounded text-xs sm:text-sm">
+                    <div className="absolute top-14 right-2 z-10 bg-green-500 text-white px-3 py-1 rounded text-xs sm:text-sm" role="status" aria-live="polite">
                          Saved!
                     </div>
                )}
 
                {/* Editor */}
-               <div className="flex-1">
+               <div className="flex-1" role="textbox" aria-label={`Code editor for ${language}`} aria-multiline="true">
                     <Editor
                          height="100%"
                          language={getMonacoLanguage()}
@@ -240,13 +246,14 @@ export default function CodeEditor({
                                    verticalScrollbarSize: isMobile ? 14 : 10,
                                    horizontalScrollbarSize: isMobile ? 14 : 10,
                               },
+                              ariaLabel: `Code editor for ${language}. Use keyboard shortcuts: Ctrl+S to save, Ctrl+Enter to run code.`,
                          }}
                     />
                </div>
 
                {/* Mobile keyboard helper */}
                {isMobile && (
-                    <div className="bg-[#1e1e1e] text-white px-2 py-1 text-xs text-center border-t border-gray-700">
+                    <div className="bg-[#1e1e1e] text-white px-2 py-1 text-xs text-center border-t border-gray-700" role="note">
                          Tip: Use external keyboard for best experience
                     </div>
                )}

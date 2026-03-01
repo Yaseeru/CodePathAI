@@ -87,9 +87,13 @@ export default function LoginForm({ onSuccess, redirectTo = '/dashboard' }: Logi
      };
 
      return (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                {error && (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+                    <div
+                         className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm"
+                         role="alert"
+                         aria-live="polite"
+                    >
                          {error}
                     </div>
                )}
@@ -103,13 +107,18 @@ export default function LoginForm({ onSuccess, redirectTo = '/dashboard' }: Logi
                          type="email"
                          value={email}
                          onChange={(e) => setEmail(e.target.value)}
-                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'
+                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'
                               }`}
                          placeholder="you@example.com"
                          disabled={loading}
+                         aria-invalid={!!fieldErrors.email}
+                         aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                         autoComplete="email"
                     />
                     {fieldErrors.email && (
-                         <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>
+                         <p id="email-error" className="mt-1 text-sm text-red-600" role="alert">
+                              {fieldErrors.email}
+                         </p>
                     )}
                </div>
 
@@ -122,20 +131,26 @@ export default function LoginForm({ onSuccess, redirectTo = '/dashboard' }: Logi
                          type="password"
                          value={password}
                          onChange={(e) => setPassword(e.target.value)}
-                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'
+                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'
                               }`}
                          placeholder="••••••••"
                          disabled={loading}
+                         aria-invalid={!!fieldErrors.password}
+                         aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                         autoComplete="current-password"
                     />
                     {fieldErrors.password && (
-                         <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>
+                         <p id="password-error" className="mt-1 text-sm text-red-600" role="alert">
+                              {fieldErrors.password}
+                         </p>
                     )}
                </div>
 
                <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-busy={loading}
                >
                     {loading ? 'Logging in...' : 'Log in'}
                </button>

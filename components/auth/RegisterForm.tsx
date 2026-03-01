@@ -125,9 +125,13 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
      };
 
      return (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                {error && (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+                    <div
+                         className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm"
+                         role="alert"
+                         aria-live="polite"
+                    >
                          {error}
                     </div>
                )}
@@ -141,13 +145,18 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
                          type="text"
                          value={name}
                          onChange={(e) => setName(e.target.value)}
-                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.name ? 'border-red-500' : 'border-gray-300'
+                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none ${fieldErrors.name ? 'border-red-500' : 'border-gray-300'
                               }`}
                          placeholder="John Doe"
                          disabled={loading}
+                         aria-invalid={!!fieldErrors.name}
+                         aria-describedby={fieldErrors.name ? "name-error" : undefined}
+                         autoComplete="name"
                     />
                     {fieldErrors.name && (
-                         <p className="mt-1 text-sm text-red-600">{fieldErrors.name}</p>
+                         <p id="name-error" className="mt-1 text-sm text-red-600" role="alert">
+                              {fieldErrors.name}
+                         </p>
                     )}
                </div>
 
@@ -160,13 +169,18 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
                          type="email"
                          value={email}
                          onChange={(e) => setEmail(e.target.value)}
-                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'
+                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'
                               }`}
                          placeholder="you@example.com"
                          disabled={loading}
+                         aria-invalid={!!fieldErrors.email}
+                         aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                         autoComplete="email"
                     />
                     {fieldErrors.email && (
-                         <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>
+                         <p id="email-error" className="mt-1 text-sm text-red-600" role="alert">
+                              {fieldErrors.email}
+                         </p>
                     )}
                </div>
 
@@ -179,26 +193,32 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
                          type="password"
                          value={password}
                          onChange={(e) => setPassword(e.target.value)}
-                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'
+                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'
                               }`}
                          placeholder="••••••••"
                          disabled={loading}
+                         aria-invalid={!!fieldErrors.password}
+                         aria-describedby={fieldErrors.password ? "password-error password-strength" : "password-strength"}
+                         autoComplete="new-password"
                     />
                     {fieldErrors.password && (
-                         <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>
+                         <p id="password-error" className="mt-1 text-sm text-red-600" role="alert">
+                              {fieldErrors.password}
+                         </p>
                     )}
 
                     {/* Password strength indicator */}
                     {password && passwordStrength && (
-                         <div className="mt-2">
-                              <div className="flex gap-1 mb-1">
+                         <div id="password-strength" className="mt-2" aria-live="polite">
+                              <div className="flex gap-1 mb-1" role="progressbar" aria-valuenow={passwordStrength.strength} aria-valuemin={0} aria-valuemax={4} aria-label="Password strength">
                                    {[...Array(4)].map((_, i) => (
                                         <div
                                              key={i}
                                              className={`h-1 flex-1 rounded ${i < passwordStrength.strength
-                                                       ? getStrengthColor(passwordStrength.strength)
-                                                       : 'bg-gray-200'
+                                                  ? getStrengthColor(passwordStrength.strength)
+                                                  : 'bg-gray-200'
                                                   }`}
+                                             aria-hidden="true"
                                         />
                                    ))}
                               </div>
@@ -225,20 +245,26 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
                          type="password"
                          value={confirmPassword}
                          onChange={(e) => setConfirmPassword(e.target.value)}
-                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${fieldErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                         className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none ${fieldErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'
                               }`}
                          placeholder="••••••••"
                          disabled={loading}
+                         aria-invalid={!!fieldErrors.confirmPassword}
+                         aria-describedby={fieldErrors.confirmPassword ? "confirm-password-error" : undefined}
+                         autoComplete="new-password"
                     />
                     {fieldErrors.confirmPassword && (
-                         <p className="mt-1 text-sm text-red-600">{fieldErrors.confirmPassword}</p>
+                         <p id="confirm-password-error" className="mt-1 text-sm text-red-600" role="alert">
+                              {fieldErrors.confirmPassword}
+                         </p>
                     )}
                </div>
 
                <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-busy={loading}
                >
                     {loading ? 'Creating account...' : 'Create account'}
                </button>

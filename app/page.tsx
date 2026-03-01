@@ -35,44 +35,44 @@ export default function Home() {
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-              <div className="p-6 bg-surface rounded-lg border border-border">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16" role="list">
+              <div className="p-6 bg-surface rounded-lg border border-border" role="listitem">
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4" aria-hidden="true">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-text-primary mb-2">
+                <h2 className="text-xl font-semibold text-text-primary mb-2">
                   Goal-First Learning
-                </h3>
+                </h2>
                 <p className="text-text-secondary">
                   Start with what you want to build, not a programming language
                 </p>
               </div>
 
-              <div className="p-6 bg-surface rounded-lg border border-border">
-                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-6 bg-surface rounded-lg border border-border" role="listitem">
+                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mx-auto mb-4" aria-hidden="true">
+                  <svg className="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-text-primary mb-2">
+                <h2 className="text-xl font-semibold text-text-primary mb-2">
                   15-Minute Sessions
-                </h3>
+                </h2>
                 <p className="text-text-secondary">
                   Make progress even with a busy schedule
                 </p>
               </div>
 
-              <div className="p-6 bg-surface rounded-lg border border-border">
-                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-6 bg-surface rounded-lg border border-border" role="listitem">
+                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-4" aria-hidden="true">
+                  <svg className="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-text-primary mb-2">
+                <h2 className="text-xl font-semibold text-text-primary mb-2">
                   Build Real Projects
-                </h3>
+                </h2>
                 <p className="text-text-secondary">
                   Create tangible outcomes aligned with your goals
                 </p>

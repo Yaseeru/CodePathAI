@@ -153,19 +153,25 @@ export function ChatInterface({
      ];
 
      return (
-          <div className="flex flex-col h-full bg-white rounded-lg shadow-lg">
+          <div className="flex flex-col h-full bg-white rounded-lg shadow-lg" role="region" aria-label="AI Mentor Chat">
                {/* Header with context badge */}
                <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-900">AI Mentor</h2>
+                    <h2 className="text-lg font-semibold text-gray-900" id="chat-title">AI Mentor</h2>
                     {lessonTitle && (
-                         <div className="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">
+                         <div className="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full" role="status" aria-label={`Current lesson: ${lessonTitle}`}>
                               {lessonTitle}
                          </div>
                     )}
                </div>
 
                {/* Messages area */}
-               <div className="flex-1 overflow-y-auto p-4">
+               <div
+                    className="flex-1 overflow-y-auto p-4"
+                    role="log"
+                    aria-live="polite"
+                    aria-atomic="false"
+                    aria-labelledby="chat-title"
+               >
                     {messages.length === 0 ? (
                          <div className="flex flex-col items-center justify-center h-full text-center">
                               <div className="mb-4">
@@ -174,6 +180,7 @@ export function ChatInterface({
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
+                                        aria-hidden="true"
                                    >
                                         <path
                                              strokeLinecap="round"
@@ -191,13 +198,14 @@ export function ChatInterface({
                               </p>
 
                               {/* Quick action buttons */}
-                              <div className="flex flex-wrap gap-2 justify-center">
+                              <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label="Quick action suggestions">
                                    {quickActions.map((action) => (
                                         <button
                                              key={action}
                                              onClick={() => handleSendMessage(action)}
-                                             className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                                             className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                                              disabled={isLoading}
+                                             aria-label={`Send message: ${action}`}
                                         >
                                              {action}
                                         </button>
@@ -214,13 +222,13 @@ export function ChatInterface({
 
                {/* Error display */}
                {error && (
-                    <div className="px-4 py-2 bg-red-50 border-t border-red-200">
+                    <div className="px-4 py-2 bg-red-50 border-t border-red-200" role="alert" aria-live="assertive">
                          <p className="text-sm text-red-600">{error}</p>
                     </div>
                )}
 
                {/* Input area */}
-               <div className="border-t border-gray-200 p-4">
+               <div className="border-t border-gray-200 p-4" role="form" aria-label="Send message to AI mentor">
                     <MessageInput onSend={handleSendMessage} disabled={isLoading} />
                </div>
           </div>

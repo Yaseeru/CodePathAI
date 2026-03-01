@@ -8,6 +8,7 @@ interface LessonSection {
      type: 'text' | 'code' | 'image' | 'video';
      content: string;
      language?: string;
+     alt?: string; // Alt text for images
 }
 
 interface Exercise {
@@ -127,7 +128,7 @@ export default function LessonContent({ lesson }: LessonContentProps) {
                                         <div className="relative w-full h-96 rounded-lg overflow-hidden">
                                              <Image
                                                   src={section.content}
-                                                  alt="Lesson illustration"
+                                                  alt={section.alt || `Illustration for ${lesson.title}`}
                                                   fill
                                                   className="object-contain"
                                                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

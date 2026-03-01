@@ -82,7 +82,11 @@ export function MessageInput({ onSend, disabled }: MessageInputProps) {
      return (
           <div className="space-y-2">
                <div className="relative">
+                    <label htmlFor="chat-message-input" className="sr-only">
+                         Message to AI mentor
+                    </label>
                     <textarea
+                         id="chat-message-input"
                          ref={textareaRef}
                          value={value}
                          onChange={handleChange}
@@ -90,23 +94,28 @@ export function MessageInput({ onSend, disabled }: MessageInputProps) {
                          onPaste={handlePaste}
                          disabled={disabled}
                          placeholder="Ask your AI mentor anything... (Shift+Enter for new line)"
-                         className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                         className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none resize-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                          rows={1}
                          style={{ minHeight: '52px', maxHeight: '200px' }}
+                         aria-label="Message to AI mentor"
+                         aria-describedby="message-help-text"
+                         aria-invalid={value.length > MAX_LENGTH}
                     />
 
                     {/* Send button */}
                     <button
                          onClick={handleSend}
                          disabled={disabled || !value.trim()}
-                         className="absolute right-2 bottom-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                         className="absolute right-2 bottom-2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                          aria-label="Send message"
+                         type="button"
                     >
                          <svg
                               className="w-5 h-5"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
+                              aria-hidden="true"
                          >
                               <path
                                    strokeLinecap="round"
@@ -118,13 +127,17 @@ export function MessageInput({ onSend, disabled }: MessageInputProps) {
                     </button>
                </div>
 
-               {/* Character counter */}
-               <div className="flex justify-between items-center text-xs">
+               {/* Character counter and help text */}
+               <div id="message-help-text" className="flex justify-between items-center text-xs">
                     <span className="text-gray-500">
                          Shift+Enter for new line, Enter to send
                     </span>
                     {isNearLimit && (
-                         <span className={remainingChars < 0 ? 'text-red-600' : 'text-orange-600'}>
+                         <span
+                              className={remainingChars < 0 ? 'text-red-600' : 'text-orange-600'}
+                              role="status"
+                              aria-live="polite"
+                         >
                               {remainingChars} characters remaining
                          </span>
                     )}
