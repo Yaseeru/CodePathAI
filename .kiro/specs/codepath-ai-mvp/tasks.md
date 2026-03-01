@@ -336,7 +336,7 @@ The implementation is organized into 5 major phases:
     - Test timeout detection
     - _Requirements: 7.6_
 
-- [ ] 11. Checkpoint - Code execution working
+- [x] 11. Checkpoint - Code execution working
   - Ensure all tests pass, ask the user if questions arise.
 
 
