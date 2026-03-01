@@ -1250,15 +1250,15 @@ The implementation is organized into 5 major phases:
     - Test database query times (< 500ms)
     - _Requirements: Performance targets_
 
-- [ ] 32. Create E2E test suite
-  - [ ] 32.1 Set up Playwright testing
+- [x] 32. Create E2E test suite
+  - [x] 32.1 Set up Playwright testing
     - Install and configure Playwright
     - Set up test database and fixtures
     - Create test user accounts
     - Configure CI/CD integration
     - _Requirements: Testing strategy_
 
-  - [ ] 32.2 Write critical user journey tests
+  - [x] 32.2 Write critical user journey tests
     - Test complete registration → onboarding → first lesson flow
     - Test lesson completion → next lesson unlock flow
     - Test code execution → AI help → completion flow
@@ -1266,7 +1266,7 @@ The implementation is organized into 5 major phases:
     - Test goal pivot → new roadmap flow
     - _Requirements: Testing strategy_
 
-  - [ ] 32.3 Write integration tests
+  - [x] 32.3 Write integration tests
     - Test authentication flow end-to-end
     - Test roadmap generation integration
     - Test AI chat with context enrichment
