@@ -7,6 +7,8 @@ import LessonProgress from '@/components/lesson/LessonProgress';
 import CodeEditor from '@/components/editor/CodeEditor';
 import CodeOutput from '@/components/editor/CodeOutput';
 import CodeControls from '@/components/editor/CodeControls';
+import Notification from '@/components/ui/Notification';
+import { useNotification } from '@/lib/hooks/useNotification';
 
 interface ExecutionResult {
   stdout: string;
@@ -34,6 +36,7 @@ export default function LessonPageClient({
   const [isRunning, setIsRunning] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaveTime, setLastSaveTime] = useState<Date | null>(null);
+  const { notifications, showNotification, removeNotification } = useNotification();
 
   // Auto-save code every 30 seconds
   useEffect(() => {
@@ -119,8 +122,71 @@ export default function LessonPageClient({
   const totalSteps = lesson.content?.exercises?.length || 1;
   const completedSteps = 0; // This would be tracked based on exercise completion
 
+  // Function to handle lesson completion
+  const handleCompleteLesson = useCallback(async (completionTime: number) => {
+    try {
+      const response = await fetch(`/api/lessons/${lesson.id}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completionTime }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Show success notification
+        showNotification({
+          type: 'success',
+          title: 'Lesson Completed!',
+          message: 'Great job! Moving to the next lesson.',
+        });
+
+        // Show difficulty adjustment notification if present
+        if (result.difficultyNotification) {
+          showNotification({
+            type: 'difficulty_adjustment',
+            title: result.difficultyNotification.title,
+            message: result.difficultyNotification.message,
+            oldLevel: result.difficultyNotification.oldLevel,
+            newLevel: result.difficultyNotification.newLevel,
+          });
+        }
+
+        // Redirect to next lesson or dashboard
+        if (result.nextLesson) {
+          setTimeout(() => {
+            window.location.href = `/lesson/${result.nextLesson.id}`;
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 2000);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to complete lesson:', error);
+      showNotification({
+        type: 'error',
+        title: 'Error',
+        message: 'Failed to complete lesson. Please try again.',
+      });
+    }
+  }, [lesson.id, showNotification]);
+
   return (
     <div className="h-screen flex flex-col bg-gray-50">
+      {/* Notifications */}
+      {notifications.map((notification) => (
+        <Notification
+          key={notification.id}
+          type={notification.type}
+          title={notification.title}
+          message={notification.message}
+          oldLevel={notification.oldLevel}
+          newLevel={notification.newLevel}
+          onClose={() => removeNotification(notification.id)}
+        />
+      ))}
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-200 px-6 py-3">
         <div className="flex items-center justify-between">

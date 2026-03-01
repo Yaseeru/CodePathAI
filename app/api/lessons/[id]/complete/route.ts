@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase';
+import {
+     calculateDifficultyAdjustment,
+     applyDifficultyAdjustment
+} from '@/lib/services/difficulty-adjustment';
 
 /**
  * POST /api/lessons/:id/complete
@@ -9,6 +13,7 @@ import { createClient } from '@/lib/supabase';
  * - Increment user_progress.total_lessons_completed
  * - Update user_progress.total_learning_time
  * - Update daily_activity for current date
+ * - Check if difficulty adjustment needed (every 5th lesson)
  * - Return next lesson in roadmap
  */
 export async function POST(
@@ -163,11 +168,38 @@ export async function POST(
                .limit(1)
                .single();
 
+          // Check if difficulty adjustment is needed (every 5th lesson)
+          const newTotalCompleted = (userProgress?.total_lessons_completed || 0) + 1;
+          let difficultyNotification = null;
+
+          if (newTotalCompleted % 5 === 0) {
+               try {
+                    const adjustment = await calculateDifficultyAdjustment(user.id);
+
+                    if (adjustment.shouldNotify) {
+                         await applyDifficultyAdjustment(user.id, adjustment);
+
+                         const levelChange = adjustment.newLevel > adjustment.oldLevel ? 'increased' : 'decreased';
+                         difficultyNotification = {
+                              type: 'difficulty_adjustment',
+                              title: `Difficulty Level ${levelChange.charAt(0).toUpperCase() + levelChange.slice(1)}`,
+                              message: adjustment.reason,
+                              oldLevel: adjustment.oldLevel,
+                              newLevel: adjustment.newLevel
+                         };
+                    }
+               } catch (error) {
+                    console.error('Error adjusting difficulty:', error);
+                    // Don't fail the request if difficulty adjustment fails
+               }
+          }
+
           return NextResponse.json({
                success: true,
                message: 'Lesson completed successfully',
                completionTime: calculatedCompletionTime,
-               nextLesson: nextLesson || null
+               nextLesson: nextLesson || null,
+               difficultyNotification
           });
 
      } catch (error) {
