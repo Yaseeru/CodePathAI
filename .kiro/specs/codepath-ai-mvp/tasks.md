@@ -513,8 +513,8 @@ The implementation is organized into 5 major phases:
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 16. Implement build-as-you-learn projects
-  - [ ] 16.1 Create project workspace UI
+- [x] 16. Implement build-as-you-learn projects
+  - [x] 16.1 Create project workspace UI
     - Build project page layout (/app/project/[id]/page.tsx)
     - Display project title, description, requirements
     - Show success criteria checklist
@@ -527,7 +527,7 @@ The implementation is organized into 5 major phases:
     - **Property 21: Project requirements display**
     - **Validates: Requirements 8.2**
 
-  - [ ] 16.3 Implement project code persistence
+  - [x] 16.3 Implement project code persistence
     - Create POST /api/projects/:id/save endpoint
     - Save code with project_id and user_id
     - Track save timestamps
@@ -538,7 +538,7 @@ The implementation is organized into 5 major phases:
     - **Property 22: Project code persistence**
     - **Validates: Requirements 8.3, 8.5**
 
-  - [ ] 16.5 Create project submission system
+  - [x] 16.5 Create project submission system
     - Create POST /api/projects/:id/submit endpoint
     - Insert project_submissions record
     - Trigger AI code review automatically

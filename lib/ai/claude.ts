@@ -108,6 +108,26 @@ export class ClaudeService {
      }
 
      /**
+      * Review code and provide feedback
+      */
+     async reviewCode(reviewPrompt: string): Promise<string> {
+          const response = await this.makeRequest({
+               model: this.model,
+               messages: [
+                    {
+                         role: 'user',
+                         content: reviewPrompt,
+                    },
+               ],
+               max_tokens: 2048,
+               temperature: 0.7,
+               stream: false,
+          });
+
+          return response.content[0].text;
+     }
+
+     /**
       * Stream a chat response in real-time with context enrichment
       */
      async *streamChat(
