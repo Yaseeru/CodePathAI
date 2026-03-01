@@ -41,18 +41,24 @@
   --spacing-xl: 2rem;      /* 32px */
   --spacing-2xl: 3rem;     /* 48px */
   
-  /* Typography */
+  /* Typography - Using relative units (rem/em) */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   --font-mono: 'Monaco', 'Consolas', 'Courier New', monospace;
   
-  --font-size-xs: 0.75rem;    /* 12px */
-  --font-size-sm: 0.875rem;   /* 14px */
-  --font-size-base: 1rem;     /* 16px */
-  --font-size-lg: 1.125rem;   /* 18px */
-  --font-size-xl: 1.25rem;    /* 20px */
-  --font-size-2xl: 1.5rem;    /* 24px */
-  --font-size-3xl: 1.875rem;  /* 30px */
-  --font-size-4xl: 2.25rem;   /* 36px */
+  /* Font sizes in rem (relative to root 16px) - ensures 14px-18px range */
+  --font-size-xs: 0.75rem;    /* 12px - below range, use sparingly */
+  --font-size-sm: 0.875rem;   /* 14px - minimum */
+  --font-size-base: 1rem;     /* 16px - base */
+  --font-size-lg: 1.125rem;   /* 18px - maximum */
+  --font-size-xl: 1.25rem;    /* 20px - headings only */
+  --font-size-2xl: 1.5rem;    /* 24px - headings only */
+  --font-size-3xl: 1.875rem;  /* 30px - headings only */
+  --font-size-4xl: 2.25rem;   /* 36px - headings only */
+  
+  /* Responsive line heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
   
   /* Border Radius */
   --radius-sm: 0.25rem;  /* 4px */
@@ -120,6 +126,7 @@
   padding: 0;
 }
 
+/* Base font size: 16px - requirement 14.5 */
 html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
@@ -130,9 +137,98 @@ body {
   background: var(--color-background);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
+  /* Base font size using rem - 16px */
   font-size: var(--font-size-base);
-  line-height: 1.5;
+  /* Responsive line height */
+  line-height: var(--line-height-normal);
   min-height: 100vh;
+}
+
+/* Typography scale using rem for responsive sizing */
+h1 {
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-tight);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-tight);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+  font-weight: 600;
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-normal);
+  font-weight: 600;
+}
+
+h5 {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
+  font-weight: 600;
+}
+
+h6 {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: 600;
+}
+
+/* Body text - ensure 14px-18px range */
+p, li, span, div {
+  font-size: var(--font-size-base); /* 16px */
+  line-height: var(--line-height-normal);
+}
+
+/* Small text - minimum 14px */
+small, .text-small {
+  font-size: var(--font-size-sm); /* 14px */
+  line-height: var(--line-height-normal);
+}
+
+/* Large text - maximum 18px for body text */
+.text-large {
+  font-size: var(--font-size-lg); /* 18px */
+  line-height: var(--line-height-relaxed);
+}
+
+/* Responsive typography adjustments */
+@media (max-width: 640px) {
+  /* Mobile: slightly smaller headings */
+  h1 {
+    font-size: var(--font-size-3xl);
+  }
+  
+  h2 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  h3 {
+    font-size: var(--font-size-xl);
+  }
+  
+  /* Body text remains 16px (1rem) */
+  body {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Tablet: moderate heading sizes */
+  h1 {
+    font-size: var(--font-size-3xl);
+  }
+  
+  h2 {
+    font-size: var(--font-size-2xl);
+  }
 }
 
 /* Focus styles for accessibility */
@@ -149,7 +245,7 @@ html {
 /* Code blocks */
 code {
   font-family: var(--font-mono);
-  font-size: 0.9em;
+  font-size: 0.9em; /* Relative to parent */
   background: var(--color-surface);
   padding: 0.125rem 0.25rem;
   border-radius: var(--radius-sm);
@@ -162,6 +258,8 @@ pre {
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
   overflow-x: auto;
+  font-size: var(--font-size-sm); /* 14px */
+  line-height: var(--line-height-relaxed);
 }
 
 pre code {

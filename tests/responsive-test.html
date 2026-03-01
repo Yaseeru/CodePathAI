@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>CodePath AI - Responsive Layout Test</title>
+     <style>
+          * {
+               box-sizing: border-box;
+               margin: 0;
+               padding: 0;
+          }
+
+          body {
+               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+               font-size: 16px;
+               line-height: 1.5;
+               background: #f9fafb;
+          }
+
+          .test-info {
+               position: fixed;
+               top: 0;
+               right: 0;
+               background: #1e293b;
+               color: white;
+               padding: 1rem;
+               font-size: 14px;
+               z-index: 1000;
+               border-bottom-left-radius: 8px;
+          }
+
+          .viewport-width {
+               font-weight: bold;
+               color: #10b981;
+          }
+
+          .breakpoint {
+               color: #f59e0b;
+               margin-top: 0.5rem;
+          }
+
+          .container {
+               max-width: 1280px;
+               margin: 0 auto;
+               padding: 1rem;
+          }
+
+          h1 {
+               font-size: 2rem;
+               margin: 2rem 0 1rem;
+               color: #111827;
+          }
+
+          h2 {
+               font-size: 1.5rem;
+               margin: 1.5rem 0 1rem;
+               color: #374151;
+          }
+
+          .test-section {
+               background: white;
+               padding: 1.5rem;
+               margin: 1rem 0;
+               border-radius: 8px;
+               box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          }
+
+          .font-test {
+               margin: 0.5rem 0;
+               padding: 0.5rem;
+               background: #f3f4f6;
+               border-left: 3px solid #6366f1;
+          }
+
+          .font-size-14 {
+               font-size: 14px;
+          }
+
+          .font-size-16 {
+               font-size: 16px;
+          }
+
+          .font-size-18 {
+               font-size: 18px;
+          }
+
+          .touch-target {
+               display: inline-block;
+               min-width: 44px;
+               min-height: 44px;
+               background: #6366f1;
+               color: white;
+               border: none;
+               border-radius: 8px;
+               padding: 0.75rem 1rem;
+               margin: 0.5rem;
+               cursor: pointer;
+               text-align: center;
+               line-height: 1.5;
+          }
+
+          .touch-target:hover {
+               background: #4f46e5;
+          }
+
+          .grid-test {
+               display: grid;
+               grid-template-columns: 1fr;
+               gap: 1rem;
+               margin: 1rem 0;
+          }
+
+          @media (min-width: 640px) {
+               .grid-test {
+                    grid-template-columns: repeat(2, 1fr);
+               }
+          }
+
+          @media (min-width: 1024px) {
+               .grid-test {
+                    grid-template-columns: repeat(3, 1fr);
+               }
+          }
+
+          .grid-item {
+               background: #dbeafe;
+               padding: 1.5rem;
+               border-radius: 8px;
+               text-align: center;
+          }
+
+          .overflow-test {
+               background: #fef3c7;
+               padding: 1rem;
+               margin: 1rem 0;
+               border-radius: 8px;
+               overflow-x: auto;
+          }
+
+          .wide-content {
+               min-width: 100%;
+               white-space: nowrap;
+          }
+
+          @media (max-width: 640px) {
+               h1 {
+                    font-size: 1.5rem;
+               }
+
+               h2 {
+                    font-size: 1.25rem;
+               }
+          }
+     </style>
+</head>
+
+<body>
+     <div class="test-info">
+          <div>Viewport: <span class="viewport-width" id="viewport-width">0px</span></div>
+          <div class="breakpoint" id="breakpoint">Mobile</div>
+     </div>
+
+     <div class="container">
+          <h1>CodePath AI - Responsive Layout Test</h1>
+          <p>Resize your browser window to test different breakpoints.</p>
+
+          <div class="test-section">
+               <h2>1. Typography Test (14px-18px Range)</h2>
+               <div class="font-test font-size-14">
+                    <strong>14px (0.875rem):</strong> This is the minimum font size for body text. It should be readable
+                    on all devices.
+               </div>
+               <div class="font-test font-size-16">
+                    <strong>16px (1rem):</strong> This is the base font size. Most body text should use this size.
+               </div>
+               <div class="font-test font-size-18">
+                    <strong>18px (1.125rem):</strong> This is the maximum font size for body text. Used for emphasis.
+               </div>
+          </div>
+
+          <div class="test-section">
+               <h2>2. Touch Target Test (44x44px Minimum)</h2>
+               <p>All buttons below should be at least 44x44px for proper touch interaction:</p>
+               <button class="touch-target">Button 1</button>
+               <button class="touch-target">Button 2</button>
+               <button class="touch-target">Button 3</button>
+               <button class="touch-target">Long Button Text</button>
+          </div>
+
+          <div class="test-section">
+               <h2>3. Responsive Grid Test</h2>
+               <p>Grid should show: 1 column (mobile), 2 columns (tablet), 3 columns (desktop)</p>
+               <div class="grid-test">
+                    <div class="grid-item">
+                         <h3>Card 1</h3>
+                         <p>Content here</p>
+                    </div>
+                    <div class="grid-item">
+                         <h3>Card 2</h3>
+                         <p>Content here</p>
+                    </div>
+                    <div class="grid-item">
+                         <h3>Card 3</h3>
+                         <p>Content here</p>
+                    </div>
+               </div>
+          </div>
+
+          <div class="test-section">
+               <h2>4. Horizontal Scroll Test</h2>
+               <div class="overflow-test">
+                    <div class="wide-content">
+                         ✓ If you see this entire line without horizontal scroll, the layout is working correctly!
+                    </div>
+               </div>
+               <p><strong>Expected:</strong> No horizontal scroll bar should appear on the page body.</p>
+          </div>
+
+          <div class="test-section">
+               <h2>5. Breakpoint Reference</h2>
+               <ul style="line-height: 2;">
+                    <li><strong>Mobile:</strong> 375px - 767px (1 column)</li>
+                    <li><strong>Tablet:</strong> 768px - 1023px (2 columns)</li>
+                    <li><strong>Desktop:</strong> 1024px+ (3 columns)</li>
+               </ul>
+          </div>
+
+          <div class="test-section">
+               <h2>Test Checklist</h2>
+               <ul style="line-height: 2;">
+                    <li>✓ Base font size is 16px</li>
+                    <li>✓ Body text between 14px-18px</li>
+                    <li>✓ Touch targets minimum 44x44px</li>
+                    <li>✓ Responsive grid (1/2/3 columns)</li>
+                    <li>✓ No horizontal scroll</li>
+                    <li>✓ Headings scale responsively</li>
+                    <li>✓ Proper line heights (1.5 for body)</li>
+                    <li>✓ Content fits within viewport</li>
+               </ul>
+          </div>
+     </div>
+
+     <script>
+          function updateViewportInfo() {
+               const width = window.innerWidth;
+               document.getElementById('viewport-width').textContent = width + 'px';
+
+               let breakpoint = 'Mobile';
+               if (width >= 1024) {
+                    breakpoint = 'Desktop (1024px+)';
+               } else if (width >= 768) {
+                    breakpoint = 'Tablet (768px-1023px)';
+               } else {
+                    breakpoint = 'Mobile (<768px)';
+               }
+
+               document.getElementById('breakpoint').textContent = breakpoint;
+          }
+
+          updateViewportInfo();
+          window.addEventListener('resize', updateViewportInfo);
+     </script>
+</body>
+
+</html>
