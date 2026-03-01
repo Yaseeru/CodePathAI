@@ -14,6 +14,30 @@ const nextConfig: NextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+
+  // Production optimizations
+  compiler: {
+    // Remove console logs in production (keep error and warn)
+    removeConsole: process.env.NODE_ENV === 'production'
+      ? { exclude: ['error', 'warn'] }
+      : false,
+  },
+
+  // Experimental optimizations
+  experimental: {
+    // Optimize CSS
+    optimizeCss: true,
+
+    // Optimize package imports
+    optimizePackageImports: [
+      '@monaco-editor/react',
+      'lucide-react',
+      'react-icons',
+    ],
+  },
+
+  // Production source maps (for error tracking)
+  productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;

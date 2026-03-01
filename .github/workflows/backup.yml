@@ -1,0 +1,136 @@
+name: Database Backup
+
+on:
+  schedule:
+    # Weekly backup every Sunday at 3 AM UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    name: Create Database Backup
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      
+      - name: Create backup
+        env:
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_DB_HOST: ${{ secrets.SUPABASE_DB_HOST }}
+        run: |
+          BACKUP_FILE="backup_$(date +%Y%m%d_%H%M%S).dump"
+          echo "Creating backup: $BACKUP_FILE"
+          
+          pg_dump -h $SUPABASE_DB_HOST \
+            -U postgres \
+            -d postgres \
+            -F c \
+            -f $BACKUP_FILE
+          
+          echo "Backup created successfully"
+          echo "BACKUP_FILE=$BACKUP_FILE" >> $GITHUB_ENV
+          
+          # Get backup size
+          BACKUP_SIZE=$(du -h $BACKUP_FILE | cut -f1)
+          echo "Backup size: $BACKUP_SIZE"
+          echo "BACKUP_SIZE=$BACKUP_SIZE" >> $GITHUB_ENV
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Upload to S3
+        run: |
+          echo "Uploading backup to S3..."
+          aws s3 cp $BACKUP_FILE s3://codepath-backups/weekly/
+          
+          echo "Verifying upload..."
+          aws s3 ls s3://codepath-backups/weekly/$BACKUP_FILE
+          
+          echo "✅ Backup uploaded successfully"
+      
+      - name: Cleanup old backups
+        run: |
+          echo "Cleaning up backups older than 90 days..."
+          
+          # Calculate cutoff date (90 days ago)
+          CUTOFF_DATE=$(date -d '90 days ago' +%Y%m%d)
+          
+          # List and delete old backups
+          aws s3 ls s3://codepath-backups/weekly/ | \
+            awk '{print $4}' | \
+            grep '^backup_' | \
+            while read file; do
+              # Extract date from filename (format: backup_YYYYMMDD_HHMMSS.dump)
+              FILE_DATE=$(echo $file | grep -oP '\d{8}' | head -1)
+              
+              if [ "$FILE_DATE" -lt "$CUTOFF_DATE" ]; then
+                echo "Deleting old backup: $file"
+                aws s3 rm s3://codepath-backups/weekly/$file
+              fi
+            done
+          
+          echo "✅ Cleanup completed"
+      
+      - name: Verify backup integrity
+        env:
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          echo "Verifying backup integrity..."
+          
+          # List contents of backup
+          pg_restore --list $BACKUP_FILE > backup_contents.txt
+          
+          # Check for critical tables
+          CRITICAL_TABLES=("user_profiles" "roadmaps" "lessons" "lesson_progress")
+          
+          for table in "${CRITICAL_TABLES[@]}"; do
+            if grep -q "$table" backup_contents.txt; then
+              echo "✅ Table found: $table"
+            else
+              echo "❌ Table missing: $table"
+              exit 1
+            fi
+          done
+          
+          echo "✅ Backup integrity verified"
+      
+      - name: Create backup report
+        if: always()
+        run: |
+          echo "## 📦 Database Backup Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Backup File**: $BACKUP_FILE" >> $GITHUB_STEP_SUMMARY
+          echo "**Backup Size**: $BACKUP_SIZE" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Backup completed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Backup failed" >> $GITHUB_STEP_SUMMARY
+          fi
+      
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Create an issue for failed backup
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Database Backup Failed',
+              body: `Database backup failed on ${new Date().toISOString()}\n\nPlease investigate immediately.\n\nWorkflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['critical', 'backup', 'infrastructure']
+            })
