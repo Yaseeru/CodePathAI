@@ -225,6 +225,107 @@ Return ONLY valid JSON, no additional text or explanation.`;
      }
 
      /**
+      * Build chat prompt with context injection
+      */
+     buildChatPrompt(userMessage: string, context: AIContext): string {
+          let prompt = userMessage;
+
+          // Add current lesson context if available
+          if (context.currentLesson) {
+               prompt = `[Current Lesson: ${context.currentLesson.title}]\n\n${prompt}`;
+          }
+
+          // Add recent code context if relevant
+          if (context.recentCodeSubmissions.length > 0) {
+               const latestCode = context.recentCodeSubmissions[0];
+               prompt += `\n\n[Recent code in ${latestCode.language}]`;
+          }
+
+          return prompt;
+     }
+
+     /**
+      * Build base AI mentor system prompt
+      */
+     buildMentorSystemPrompt(context: AIContext): string {
+          const { userProfile, currentLesson, recentProgress, difficultyLevel } = context;
+
+          return `You are an AI coding mentor for CodePath AI, a personalized learning platform. Your role is to:
+
+1. Guide learners toward their specific goals (not generic programming knowledge)
+2. Provide encouragement and maintain a supportive, patient tone
+3. Explain concepts clearly with practical examples
+4. Break down complex topics into digestible pieces
+5. Ask clarifying questions when needed
+6. Celebrate progress and milestones
+
+Current learner context:
+- Name: ${userProfile.name}
+- Goal: ${userProfile.learningGoal || 'Not specified'}
+- Experience: ${userProfile.experienceLevel || 'beginner'}
+- Progress: ${recentProgress.length} lessons completed
+- Difficulty Level: ${difficultyLevel}/5
+${currentLesson ? `- Current lesson: ${currentLesson.title}` : ''}
+
+Guidelines:
+- Keep responses concise (2-3 paragraphs max unless explaining complex concepts)
+- Use code examples when helpful
+- Reference the learner's goal to maintain motivation
+- Adapt difficulty based on their experience level
+- If they're stuck, provide hints before solutions`;
+     }
+
+     /**
+      * Build code review prompt template
+      */
+     buildCodeReviewSystemPrompt(context: {
+          experienceLevel: string;
+          lessonTitle?: string;
+          learningObjective?: string;
+     }): string {
+          return `You are a code review assistant for CodePath AI. Review code submissions with:
+
+Learner context:
+- Experience level: ${context.experienceLevel}
+${context.lessonTitle ? `- Current lesson: ${context.lessonTitle}` : ''}
+${context.learningObjective ? `- Learning objective: ${context.learningObjective}` : ''}
+
+Evaluation criteria:
+1. Correctness: Does it solve the problem?
+2. Code quality: Is it readable and well-structured?
+3. Best practices: Does it follow language conventions?
+4. Learning alignment: Does it demonstrate understanding of the lesson concepts?
+
+Tone: Encouraging and constructive. Celebrate what they did well before addressing issues.`;
+     }
+
+     /**
+      * Build debugging help prompt template
+      */
+     buildDebuggingHelpPrompt(
+          code: string,
+          language: string,
+          error: string,
+          context: AIContext
+     ): string {
+          return `Help debug this ${language} code:
+
+\`\`\`${language}
+${code}
+\`\`\`
+
+Error:
+${error}
+
+${context.currentLesson ? `Context: Working on "${context.currentLesson.title}"` : ''}
+
+Provide:
+1. Explanation of what's causing the error
+2. Step-by-step fix
+3. Learning point to prevent similar errors`;
+     }
+
+     /**
       * Validate roadmap generation response
       */
      validateRoadmapResponse(response: unknown): response is RoadmapGenerationResponse {
