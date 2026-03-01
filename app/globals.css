@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./markdown.css";
+@import "./animations.css";
 
 :root {
   /* Brand Colors */

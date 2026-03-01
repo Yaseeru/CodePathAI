@@ -13,6 +13,24 @@ import { createServerClient } from '@supabase/ssr';
 export async function middleware(request: NextRequest) {
      const { pathname } = request.nextUrl;
 
+     // Validate required environment variables
+     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+          console.error('Missing required Supabase environment variables');
+          console.error('Please ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in .env.local');
+
+          // Return error page for missing configuration
+          return new NextResponse(
+               JSON.stringify({
+                    error: 'Configuration Error',
+                    message: 'Application is not properly configured. Please contact support.',
+               }),
+               {
+                    status: 500,
+                    headers: { 'content-type': 'application/json' },
+               }
+          );
+     }
+
      // Create a response object that we can modify
      let response = NextResponse.next({
           request: {
@@ -22,8 +40,8 @@ export async function middleware(request: NextRequest) {
 
      // Create Supabase client for middleware
      const supabase = createServerClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          process.env.NEXT_PUBLIC_SUPABASE_URL,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
           {
                cookies: {
                     get(name: string) {
