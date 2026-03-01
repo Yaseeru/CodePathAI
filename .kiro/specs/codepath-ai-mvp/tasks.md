@@ -1199,7 +1199,7 @@ The implementation is organized into 5 major phases:
     - Test test case execution
     - _Requirements: 18.2, 18.3, 18.5_
 
-- [ ] 30. Checkpoint - Quality assurance complete
+- [x] 30. Checkpoint - Quality assurance complete
   - Ensure all tests pass, ask the user if questions arise.
 
 
