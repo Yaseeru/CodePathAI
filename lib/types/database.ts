@@ -227,6 +227,7 @@ export interface Database {
                          completion_time: number | null
                          attempts: number
                          error_count: number
+                         state: Json | null
                          created_at: string
                          updated_at: string
                     }
@@ -240,6 +241,7 @@ export interface Database {
                          completion_time?: number | null
                          attempts?: number
                          error_count?: number
+                         state?: Json | null
                          created_at?: string
                          updated_at?: string
                     }
@@ -253,6 +255,7 @@ export interface Database {
                          completion_time?: number | null
                          attempts?: number
                          error_count?: number
+                         state?: Json | null
                          created_at?: string
                          updated_at?: string
                     }
