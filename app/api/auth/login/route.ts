@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 import { z } from 'zod';
+import { checkRateLimit, getClientIdentifier, RateLimitConfigs } from '@/lib/rate-limit';
 
 // Validation schema for login
 const loginSchema = z.object({
@@ -10,6 +11,26 @@ const loginSchema = z.object({
 
 export async function POST(request: NextRequest) {
      try {
+          // Apply rate limiting
+          const identifier = getClientIdentifier(request);
+          const rateLimit = checkRateLimit(identifier, RateLimitConfigs.AUTH);
+
+          if (!rateLimit.allowed) {
+               const retryAfter = Math.ceil((rateLimit.resetTime - Date.now()) / 1000);
+               return NextResponse.json(
+                    { error: 'Too many requests. Please try again later.', retryAfter },
+                    {
+                         status: 429,
+                         headers: {
+                              'Retry-After': retryAfter.toString(),
+                              'X-RateLimit-Limit': RateLimitConfigs.AUTH.maxRequests.toString(),
+                              'X-RateLimit-Remaining': '0',
+                              'X-RateLimit-Reset': rateLimit.resetTime.toString(),
+                         }
+                    }
+               );
+          }
+
           const body = await request.json();
 
           // Validate input

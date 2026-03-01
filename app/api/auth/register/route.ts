@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 import { z } from 'zod';
 import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
+import { validatePasswordStrength } from '@/lib/validation/password';
+import { checkRateLimit, getClientIdentifier, RateLimitConfigs } from '@/lib/rate-limit';
 
 // Validation schema for registration
 const registerSchema = z.object({
@@ -12,6 +14,26 @@ const registerSchema = z.object({
 
 export async function POST(request: NextRequest) {
      try {
+          // Apply rate limiting
+          const identifier = getClientIdentifier(request);
+          const rateLimit = checkRateLimit(identifier, RateLimitConfigs.AUTH);
+
+          if (!rateLimit.allowed) {
+               const retryAfter = Math.ceil((rateLimit.resetTime - Date.now()) / 1000);
+               return NextResponse.json(
+                    { error: 'Too many requests. Please try again later.', retryAfter },
+                    {
+                         status: 429,
+                         headers: {
+                              'Retry-After': retryAfter.toString(),
+                              'X-RateLimit-Limit': RateLimitConfigs.AUTH.maxRequests.toString(),
+                              'X-RateLimit-Remaining': '0',
+                              'X-RateLimit-Reset': rateLimit.resetTime.toString(),
+                         }
+                    }
+               );
+          }
+
           const body = await request.json();
 
           // Validate input
@@ -24,6 +46,20 @@ export async function POST(request: NextRequest) {
           }
 
           const { name, email, password } = validationResult.data;
+
+          // Validate password strength
+          const passwordStrength = validatePasswordStrength(password);
+          if (!passwordStrength.isStrong) {
+               return NextResponse.json(
+                    {
+                         error: 'Password is not strong enough',
+                         feedback: passwordStrength.feedback,
+                         score: passwordStrength.score
+                    },
+                    { status: 400 }
+               );
+          }
+
           const supabase = createServerClient();
 
           // Register user with Supabase Auth

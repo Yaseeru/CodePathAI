@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { codeExecutionService } from '@/lib/code/executor';
 import { ErrorParser } from '@/lib/code/error-parser';
 import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
+import { checkRateLimit, getClientIdentifier, RateLimitConfigs } from '@/lib/rate-limit';
 
 const executeCodeSchema = z.object({
      code: z.string().min(1).max(50000), // 50KB limit
@@ -23,6 +24,26 @@ export async function POST(request: NextRequest) {
 
           if (authError || !user) {
                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+          }
+
+          // Apply rate limiting
+          const identifier = getClientIdentifier(request, user.id);
+          const rateLimit = checkRateLimit(identifier, RateLimitConfigs.CODE_EXECUTION);
+
+          if (!rateLimit.allowed) {
+               const retryAfter = Math.ceil((rateLimit.resetTime - Date.now()) / 1000);
+               return NextResponse.json(
+                    { error: 'Too many requests. Please try again later.', retryAfter },
+                    {
+                         status: 429,
+                         headers: {
+                              'Retry-After': retryAfter.toString(),
+                              'X-RateLimit-Limit': RateLimitConfigs.CODE_EXECUTION.maxRequests.toString(),
+                              'X-RateLimit-Remaining': '0',
+                              'X-RateLimit-Reset': rateLimit.resetTime.toString(),
+                         }
+                    }
+               );
           }
 
           // Parse and validate request body

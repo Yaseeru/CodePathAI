@@ -972,8 +972,8 @@ The implementation is organized into 5 major phases:
     - _Requirements: 15.1, 15.3, 15.5_
 
 
-- [ ] 26. Implement security hardening
-  - [ ] 26.1 Implement password security
+- [x] 26. Implement security hardening
+  - [x] 26.1 Implement password security
     - Use bcrypt with 10+ salt rounds
     - Add password strength validation
     - Implement password reset flow
@@ -984,7 +984,7 @@ The implementation is organized into 5 major phases:
     - **Property 52: Password encryption**
     - **Validates: Requirements 16.2**
 
-  - [ ] 26.3 Verify Row Level Security policies
+  - [x] 26.3 Verify Row Level Security policies
     - Test RLS policies for all tables
     - Verify users cannot access other users' data
     - Test policy enforcement on all operations
@@ -994,21 +994,21 @@ The implementation is organized into 5 major phases:
     - **Property 53: Data access isolation**
     - **Validates: Requirements 16.5**
 
-  - [ ] 26.5 Implement input sanitization
+  - [x] 26.5 Implement input sanitization
     - Sanitize code execution inputs
     - Validate all API inputs with Zod
     - Add XSS protection for user content
     - Implement CSRF protection
     - _Requirements: 16.3, 16.4_
 
-  - [ ] 26.6 Implement rate limiting
+  - [x] 26.6 Implement rate limiting
     - Add rate limiting to AI endpoints (10 req/10s)
     - Add rate limiting to code execution (5 req/min)
     - Add rate limiting to auth endpoints (5 req/min)
     - Use Upstash Redis for rate limit storage
     - _Requirements: 16.6_
 
-  - [ ] 26.7 Implement data export functionality
+  - [x] 26.7 Implement data export functionality
     - Create GET /api/user/export endpoint
     - Gather all user data (profile, roadmaps, progress, conversations, code)
     - Return as downloadable JSON
@@ -1019,7 +1019,7 @@ The implementation is organized into 5 major phases:
     - **Property 54: Data export completeness**
     - **Validates: Requirements 16.8**
 
-  - [ ] 26.9 Implement account deletion
+  - [x] 26.9 Implement account deletion
     - Create DELETE /api/user/account endpoint
     - Delete all user data via CASCADE
     - Delete auth user from Supabase

@@ -10,6 +10,7 @@ import { aiContextBuilder } from '@/lib/ai/context-builder';
 import { promptTemplateService } from '@/lib/ai/prompt-templates';
 import { z } from 'zod';
 import { trackServerEvent, ServerAnalyticsEvents } from '@/lib/analytics/server-analytics';
+import { checkRateLimit, getClientIdentifier, RateLimitConfigs } from '@/lib/rate-limit';
 
 // Request validation schema
 const chatRequestSchema = z.object({
@@ -29,6 +30,26 @@ export async function POST(req: NextRequest) {
 
           if (authError || !user) {
                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+          }
+
+          // Apply rate limiting
+          const identifier = getClientIdentifier(req, user.id);
+          const rateLimit = checkRateLimit(identifier, RateLimitConfigs.AI);
+
+          if (!rateLimit.allowed) {
+               const retryAfter = Math.ceil((rateLimit.resetTime - Date.now()) / 1000);
+               return NextResponse.json(
+                    { error: 'Too many requests. Please try again later.', retryAfter },
+                    {
+                         status: 429,
+                         headers: {
+                              'Retry-After': retryAfter.toString(),
+                              'X-RateLimit-Limit': RateLimitConfigs.AI.maxRequests.toString(),
+                              'X-RateLimit-Remaining': '0',
+                              'X-RateLimit-Reset': rateLimit.resetTime.toString(),
+                         }
+                    }
+               );
           }
 
           // Parse and validate request body
