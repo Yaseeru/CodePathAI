@@ -131,6 +131,91 @@ export interface Database {
                          updated_at?: string
                     }
                }
+               projects: {
+                    Row: {
+                         id: string
+                         roadmap_id: string
+                         title: string
+                         description: string
+                         requirements: Json
+                         success_criteria: Json
+                         order_index: number
+                         estimated_duration: number
+                         unlock_after_lesson: string | null
+                         created_at: string
+                         updated_at: string
+                    }
+                    Insert: {
+                         id?: string
+                         roadmap_id: string
+                         title: string
+                         description: string
+                         requirements: Json
+                         success_criteria: Json
+                         order_index: number
+                         estimated_duration: number
+                         unlock_after_lesson?: string | null
+                         created_at?: string
+                         updated_at?: string
+                    }
+                    Update: {
+                         id?: string
+                         roadmap_id?: string
+                         title?: string
+                         description?: string
+                         requirements?: Json
+                         success_criteria?: Json
+                         order_index?: number
+                         estimated_duration?: number
+                         unlock_after_lesson?: string | null
+                         created_at?: string
+                         updated_at?: string
+                    }
+               }
+               user_progress: {
+                    Row: {
+                         user_id: string
+                         current_roadmap_id: string | null
+                         current_lesson_id: string | null
+                         total_lessons_completed: number
+                         total_projects_completed: number
+                         total_learning_time: number
+                         current_streak: number
+                         longest_streak: number
+                         last_activity_date: string | null
+                         difficulty_level: number
+                         created_at: string
+                         updated_at: string
+                    }
+                    Insert: {
+                         user_id: string
+                         current_roadmap_id?: string | null
+                         current_lesson_id?: string | null
+                         total_lessons_completed?: number
+                         total_projects_completed?: number
+                         total_learning_time?: number
+                         current_streak?: number
+                         longest_streak?: number
+                         last_activity_date?: string | null
+                         difficulty_level?: number
+                         created_at?: string
+                         updated_at?: string
+                    }
+                    Update: {
+                         user_id?: string
+                         current_roadmap_id?: string | null
+                         current_lesson_id?: string | null
+                         total_lessons_completed?: number
+                         total_projects_completed?: number
+                         total_learning_time?: number
+                         current_streak?: number
+                         longest_streak?: number
+                         last_activity_date?: string | null
+                         difficulty_level?: number
+                         created_at?: string
+                         updated_at?: string
+                    }
+               }
                lesson_progress: {
                     Row: {
                          id: string

@@ -81,6 +81,33 @@ export class ClaudeService {
      }
 
      /**
+      * Generate a roadmap with structured JSON response
+      */
+     async generateRoadmap(systemPrompt: string): Promise<unknown> {
+          const response = await this.makeRequest({
+               model: this.model,
+               messages: [
+                    {
+                         role: 'user',
+                         content: 'Generate the roadmap based on the requirements in the system prompt.',
+                    },
+               ],
+               max_tokens: 4096,
+               temperature: 0.7,
+               stream: false,
+               system: systemPrompt,
+          });
+
+          // Parse JSON from response
+          const content = response.content[0].text;
+          try {
+               return JSON.parse(content);
+          } catch (error) {
+               throw new Error(`Failed to parse roadmap JSON: ${error}`);
+          }
+     }
+
+     /**
       * Stream a chat response in real-time with context enrichment
       */
      async *streamChat(
